@@ -8,6 +8,11 @@ namespace AeonMiner.Preferences
     {
         public bool AutoStart;
         public bool RunPlugin;
+        public bool SkipBusyNodes;
+        public bool FightAggroMobs;
+        public bool AutoLevelUp;
+        public bool BeginDailyQuest;
+        public bool FinishDailyQuest;
 
         public string TaskName = string.Empty;
         public string TravelMount = string.Empty;

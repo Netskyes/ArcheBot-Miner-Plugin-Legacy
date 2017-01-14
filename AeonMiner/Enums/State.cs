@@ -2,6 +2,10 @@
 {
     public enum State
     {
-        Check
+        Check,
+        Search,
+        Move,
+        Mine,
+        Control
     }
 }

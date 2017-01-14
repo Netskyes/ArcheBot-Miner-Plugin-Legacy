@@ -45,8 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Extensions.cs" />
+    <Compile Include="Data\Collections\Base.cs" />
+    <Compile Include="Data\Collections\MiningNodes.cs" />
+    <Compile Include="Data\Node.cs" />
+    <Compile Include="Handlers\NodeHandle.cs" />
     <Compile Include="Enums\MapUseType.cs" />
     <Compile Include="Enums\State.cs" />
+    <Compile Include="Classes\Helpers.cs" />
+    <Compile Include="Instance.cs" />
     <Compile Include="Modules\CombatModule.cs" />
     <Compile Include="Modules\Execution.cs" />
     <Compile Include="Modules\GpsModule.cs" />

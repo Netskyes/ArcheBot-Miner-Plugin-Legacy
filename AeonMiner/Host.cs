@@ -18,6 +18,11 @@ namespace AeonMiner
         #region Props & Fields
 
         /// <summary>
+        /// Loads plugin into main app domain.
+        /// </summary>
+        public static bool isReleaseVersion = false;
+
+        /// <summary>
         /// Singleton instance access of host.
         /// </summary>
         public static Host Instance { get; private set; }
@@ -33,12 +38,9 @@ namespace AeonMiner
         public BaseModule BaseModule { get; private set; }
 
 
-        private bool initStop = false;
+        public static string PluginVersion = "3.0.0";
 
-        public static string PluginVersion
-        {
-            get { return "1.0.0.2"; }
-        }
+        private bool initStop = false;
 
         #endregion
 
@@ -126,26 +128,6 @@ namespace AeonMiner
         // DEBUG
         private void Debug()
         {
-            string file = Paths.PluginPath + "dump.txt";
-            var veins = sqlCore.sqlDoodadAlmighties.Where(d => d.Value.name.Contains("Vein") && d.Value.groupId == 4);
-
-            foreach (var vein in veins)
-            {
-                File.AppendAllText(file, "[" + vein.Value.name + " " + vein.Value.id + "]: " + vein.Value.groupId + "\n");
-
-                foreach (var u in vein.Value.phases)
-                {
-                    File.AppendAllText(file, "\tPhase: " + u.name + "\n");
-
-                    foreach (var s in u.useSkills)
-                    {
-                        File.AppendAllText(file, "\t\tSkill -> " + s.name + " " + s.id + "\n");
-                    }
-                }
-                File.AppendAllText(file, "---\n");
-
-                Utils.Sleep(10);
-            }
         }
     }
 }

@@ -10,19 +10,16 @@ namespace AeonMiner.Modules
     using Enums;
     using Navigation;
 
-    internal class GpsModule
+    internal class GpsModule : Gps
     {
         private Host Host
         {
             get { return Host.Instance; }
         }
 
-        public GpsModule()
+        public GpsModule(Host host) : base(host)
         {
-            gps = new Gps(Host);
         }
-
-        private Gps gps;
 
 
         public bool Load(string zoneName)
@@ -47,11 +44,13 @@ namespace AeonMiner.Modules
             switch (zoneMap.MapUseType)
             {
                 case MapUseType.Local:
-                    success = gps.LoadDataBase(zoneMap.GetMapPath());
+                    success = LoadDataBase(zoneMap.GetMapPath());
+                    Host.LoadNavMesh(zoneMap.GetMeshPath());
                     break;
 
                 case MapUseType.Internal:
-                    success = gps.LoadDataBase(zoneMap.GetByteMap());
+                    success = LoadDataBase(zoneMap.GetByteMap());
+                    Host.LoadNavMesh(zoneMap.GetByteMesh());
                     break;
             }
 

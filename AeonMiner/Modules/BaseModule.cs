@@ -22,31 +22,31 @@ namespace AeonMiner.Modules
             get { return (Window)Host.UIContext.Instance; }
         }
 
-
-        // Modules
-        private GpsModule gps;
-        private CombatModule combat;
-        private MiningModule mining;
-
-        // Preferences
-        private MineTask mineTask;
-        private Settings settings;
-
+        // Tokens
         private CancellationTokenSource ts;
         private CancellationToken token;
 
+        // Preferences
+        private MineTask mineTask { get; set; }
+        private Settings settings { get; set; }
 
+        // Modules
+        private GpsModule gps { get; set; }
+        private CombatModule combat { get; set; }
+        private MiningModule mining { get; set; }
+
+        
         private bool Setup()
         {
-            // Init modules
-            gps = new GpsModule();
-            mining = new MiningModule(token);
-            combat = new CombatModule(token);
-
-            // Prefs
+            // Fetch preferences
             mineTask = UI.GetTask();
             settings = UI.SaveSettings() ?? UI.GetSettings();
-            
+
+            // Initialize modules
+            gps = new GpsModule(Host);
+            mining = new MiningModule(settings, token);
+            combat = new CombatModule(token);
+
 
             return Initialize();
         }
@@ -96,12 +96,15 @@ namespace AeonMiner.Modules
         {
             ts.Cancel();
 
+            // Primitives
             Host.CancelMoveTo();
             Host.CancelSkill();
             Host.RotateLeft(false);
             Host.RotateRight(false);
             Host.MoveBackward(false);
             Host.MoveForward(false);
+
+            CancelBoosts();
         }
     }
 }

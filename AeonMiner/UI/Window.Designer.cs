@@ -30,7 +30,7 @@
         {
             this.tab_Main = new System.Windows.Forms.TabControl();
             this.tab_Mining = new System.Windows.Forms.TabPage();
-            this.label6 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.txtbox_TaskName = new System.Windows.Forms.TextBox();
             this.btn_AddMiningTask = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
@@ -41,19 +41,27 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tab_Overview = new System.Windows.Forms.TabPage();
             this.tab_Extra = new System.Windows.Forms.TabPage();
+            this.tab_Combat = new System.Windows.Forms.TabPage();
             this.btn_Start = new System.Windows.Forms.Button();
-            this.container4 = new Container();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.container7 = new Container();
+            this.chkbox_AutoLevelUp = new System.Windows.Forms.CheckBox();
+            this.chkbox_FightAggroMobs = new System.Windows.Forms.CheckBox();
+            this.chkbox_SkipBusyNodes = new System.Windows.Forms.CheckBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.container6 = new Container();
             this.lbox_MiningTasks = new System.Windows.Forms.ListBox();
             this.btn_MoveTaskUp = new System.Windows.Forms.Button();
             this.btn_MoveTaskDown = new System.Windows.Forms.Button();
             this.container2 = new Container();
-            this.label7 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.container8 = new Container();
+            this.cmbox_PortalsList = new System.Windows.Forms.ComboBox();
             this.container5 = new Container();
             this.cmbox_ZonesList = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.container_WhenDone = new Container();
             this.label_Finally = new System.Windows.Forms.Label();
             this._TerminateClient = new System.Windows.Forms.RadioButton();
@@ -63,16 +71,20 @@
             this.chkbox_RunPlugin = new System.Windows.Forms.CheckBox();
             this.label_Name = new System.Windows.Forms.Label();
             this.container3 = new Container();
+            this.chkbox_FinishDailyQuest = new System.Windows.Forms.CheckBox();
             this.chkbox_AutoStart = new System.Windows.Forms.CheckBox();
+            this.chkbox_BeginDailyQuest = new System.Windows.Forms.CheckBox();
             this.container1 = new Container();
             this.cmbox_MountsList = new System.Windows.Forms.ComboBox();
             this.tab_Main.SuspendLayout();
             this.tab_Mining.SuspendLayout();
             this.tab_Options.SuspendLayout();
-            this.container4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            this.container7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.container6.SuspendLayout();
             this.container2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.container8.SuspendLayout();
             this.container5.SuspendLayout();
             this.container_WhenDone.SuspendLayout();
             this.container3.SuspendLayout();
@@ -85,6 +97,7 @@
             this.tab_Main.Controls.Add(this.tab_Options);
             this.tab_Main.Controls.Add(this.tab_Overview);
             this.tab_Main.Controls.Add(this.tab_Extra);
+            this.tab_Main.Controls.Add(this.tab_Combat);
             this.tab_Main.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tab_Main.Location = new System.Drawing.Point(0, 46);
             this.tab_Main.Name = "tab_Main";
@@ -94,8 +107,8 @@
             // 
             // tab_Mining
             // 
-            this.tab_Mining.Controls.Add(this.label6);
-            this.tab_Mining.Controls.Add(this.container4);
+            this.tab_Mining.Controls.Add(this.label8);
+            this.tab_Mining.Controls.Add(this.container7);
             this.tab_Mining.Controls.Add(this.txtbox_TaskName);
             this.tab_Mining.Controls.Add(this.btn_AddMiningTask);
             this.tab_Mining.Controls.Add(this.container6);
@@ -110,15 +123,15 @@
             this.tab_Mining.Text = "Mining";
             this.tab_Mining.UseVisualStyleBackColor = true;
             // 
-            // label6
+            // label8
             // 
-            this.label6.AutoSize = true;
-            this.label6.ForeColor = System.Drawing.Color.Gray;
-            this.label6.Location = new System.Drawing.Point(13, 165);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(72, 13);
-            this.label6.TabIndex = 17;
-            this.label6.Text = "Task options";
+            this.label8.AutoSize = true;
+            this.label8.ForeColor = System.Drawing.Color.Gray;
+            this.label8.Location = new System.Drawing.Point(252, 165);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(87, 13);
+            this.label8.TabIndex = 19;
+            this.label8.Text = "Mining options";
             // 
             // txtbox_TaskName
             // 
@@ -223,6 +236,16 @@
             this.tab_Extra.Text = "Extra";
             this.tab_Extra.UseVisualStyleBackColor = true;
             // 
+            // tab_Combat
+            // 
+            this.tab_Combat.Location = new System.Drawing.Point(4, 22);
+            this.tab_Combat.Name = "tab_Combat";
+            this.tab_Combat.Padding = new System.Windows.Forms.Padding(3);
+            this.tab_Combat.Size = new System.Drawing.Size(595, 379);
+            this.tab_Combat.TabIndex = 4;
+            this.tab_Combat.Text = "Combat";
+            this.tab_Combat.UseVisualStyleBackColor = true;
+            // 
             // btn_Start
             // 
             this.btn_Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -234,23 +257,94 @@
             this.btn_Start.UseVisualStyleBackColor = true;
             this.btn_Start.Click += new System.EventHandler(this.btn_Start_Click);
             // 
-            // container4
+            // numericUpDown2
             // 
-            this.container4.Controls.Add(this.checkBox1);
-            this.container4.Location = new System.Drawing.Point(8, 172);
-            this.container4.Name = "container4";
-            this.container4.Size = new System.Drawing.Size(162, 147);
-            this.container4.TabIndex = 16;
+            this.numericUpDown2.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.numericUpDown2.Location = new System.Drawing.Point(301, 28);
+            this.numericUpDown2.Name = "numericUpDown2";
+            this.numericUpDown2.Size = new System.Drawing.Size(56, 20);
+            this.numericUpDown2.TabIndex = 14;
+            this.numericUpDown2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numericUpDown2.Value = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
             // 
-            // checkBox1
+            // checkBox2
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(10, 17);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(59, 17);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Next if";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(201, 31);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(94, 17);
+            this.checkBox2.TabIndex = 12;
+            this.checkBox2.Text = "Task time: (m)";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // container7
+            // 
+            this.container7.Controls.Add(this.chkbox_AutoLevelUp);
+            this.container7.Controls.Add(this.chkbox_FightAggroMobs);
+            this.container7.Controls.Add(this.chkbox_SkipBusyNodes);
+            this.container7.Controls.Add(this.label7);
+            this.container7.Controls.Add(this.numericUpDown1);
+            this.container7.Location = new System.Drawing.Point(247, 172);
+            this.container7.Name = "container7";
+            this.container7.Size = new System.Drawing.Size(339, 199);
+            this.container7.TabIndex = 18;
+            // 
+            // chkbox_AutoLevelUp
+            // 
+            this.chkbox_AutoLevelUp.AutoSize = true;
+            this.chkbox_AutoLevelUp.Location = new System.Drawing.Point(16, 86);
+            this.chkbox_AutoLevelUp.Name = "chkbox_AutoLevelUp";
+            this.chkbox_AutoLevelUp.Size = new System.Drawing.Size(97, 17);
+            this.chkbox_AutoLevelUp.TabIndex = 13;
+            this.chkbox_AutoLevelUp.Text = "Auto Level Up";
+            this.chkbox_AutoLevelUp.UseVisualStyleBackColor = true;
+            // 
+            // chkbox_FightAggroMobs
+            // 
+            this.chkbox_FightAggroMobs.AutoSize = true;
+            this.chkbox_FightAggroMobs.Location = new System.Drawing.Point(16, 109);
+            this.chkbox_FightAggroMobs.Name = "chkbox_FightAggroMobs";
+            this.chkbox_FightAggroMobs.Size = new System.Drawing.Size(120, 17);
+            this.chkbox_FightAggroMobs.TabIndex = 12;
+            this.chkbox_FightAggroMobs.Text = "Fight Aggro Mobs";
+            this.chkbox_FightAggroMobs.UseVisualStyleBackColor = true;
+            // 
+            // chkbox_SkipBusyNodes
+            // 
+            this.chkbox_SkipBusyNodes.AutoSize = true;
+            this.chkbox_SkipBusyNodes.Location = new System.Drawing.Point(16, 63);
+            this.chkbox_SkipBusyNodes.Name = "chkbox_SkipBusyNodes";
+            this.chkbox_SkipBusyNodes.Size = new System.Drawing.Size(111, 17);
+            this.chkbox_SkipBusyNodes.TabIndex = 11;
+            this.chkbox_SkipBusyNodes.Text = "Skip Busy Nodes";
+            this.chkbox_SkipBusyNodes.UseVisualStyleBackColor = true;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(13, 18);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(62, 13);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "Min. Labor";
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.numericUpDown1.Location = new System.Drawing.Point(81, 15);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(56, 20);
+            this.numericUpDown1.TabIndex = 9;
+            this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
             // 
             // container6
             // 
@@ -267,9 +361,6 @@
             // 
             this.lbox_MiningTasks.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lbox_MiningTasks.FormattingEnabled = true;
-            this.lbox_MiningTasks.Items.AddRange(new object[] {
-            "MiningTask 1",
-            "MiningTask 2"});
             this.lbox_MiningTasks.Location = new System.Drawing.Point(6, 6);
             this.lbox_MiningTasks.Name = "lbox_MiningTasks";
             this.lbox_MiningTasks.Size = new System.Drawing.Size(150, 65);
@@ -300,32 +391,34 @@
             // 
             // container2
             // 
-            this.container2.Controls.Add(this.label7);
-            this.container2.Controls.Add(this.numericUpDown1);
+            this.container2.Controls.Add(this.container8);
+            this.container2.Controls.Add(this.numericUpDown2);
+            this.container2.Controls.Add(this.checkBox2);
             this.container2.Controls.Add(this.container5);
             this.container2.Controls.Add(this.label5);
+            this.container2.Controls.Add(this.label6);
             this.container2.Location = new System.Drawing.Point(182, 18);
             this.container2.Name = "container2";
-            this.container2.Size = new System.Drawing.Size(404, 209);
+            this.container2.Size = new System.Drawing.Size(404, 142);
             this.container2.TabIndex = 9;
             // 
-            // label7
+            // container8
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(211, 44);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(62, 13);
-            this.label7.TabIndex = 10;
-            this.label7.Text = "Min. Labor";
+            this.container8.Controls.Add(this.cmbox_PortalsList);
+            this.container8.Location = new System.Drawing.Point(16, 84);
+            this.container8.Name = "container8";
+            this.container8.Size = new System.Drawing.Size(169, 27);
+            this.container8.TabIndex = 15;
             // 
-            // numericUpDown1
+            // cmbox_PortalsList
             // 
-            this.numericUpDown1.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.numericUpDown1.Location = new System.Drawing.Point(279, 41);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(67, 20);
-            this.numericUpDown1.TabIndex = 9;
-            this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.cmbox_PortalsList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbox_PortalsList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbox_PortalsList.FormattingEnabled = true;
+            this.cmbox_PortalsList.Location = new System.Drawing.Point(3, 3);
+            this.cmbox_PortalsList.Name = "cmbox_PortalsList";
+            this.cmbox_PortalsList.Size = new System.Drawing.Size(163, 21);
+            this.cmbox_PortalsList.TabIndex = 0;
             // 
             // container5
             // 
@@ -353,6 +446,15 @@
             this.label5.Size = new System.Drawing.Size(75, 13);
             this.label5.TabIndex = 8;
             this.label5.Text = "Mining zone:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(13, 67);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(84, 13);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Nearby district:";
             // 
             // container_WhenDone
             // 
@@ -445,11 +547,23 @@
             // 
             // container3
             // 
+            this.container3.Controls.Add(this.chkbox_FinishDailyQuest);
             this.container3.Controls.Add(this.chkbox_AutoStart);
+            this.container3.Controls.Add(this.chkbox_BeginDailyQuest);
             this.container3.Location = new System.Drawing.Point(8, 18);
             this.container3.Name = "container3";
-            this.container3.Size = new System.Drawing.Size(200, 100);
+            this.container3.Size = new System.Drawing.Size(200, 182);
             this.container3.TabIndex = 5;
+            // 
+            // chkbox_FinishDailyQuest
+            // 
+            this.chkbox_FinishDailyQuest.AutoSize = true;
+            this.chkbox_FinishDailyQuest.Location = new System.Drawing.Point(10, 63);
+            this.chkbox_FinishDailyQuest.Name = "chkbox_FinishDailyQuest";
+            this.chkbox_FinishDailyQuest.Size = new System.Drawing.Size(119, 17);
+            this.chkbox_FinishDailyQuest.TabIndex = 15;
+            this.chkbox_FinishDailyQuest.Text = "Finish Daily Quest";
+            this.chkbox_FinishDailyQuest.UseVisualStyleBackColor = true;
             // 
             // chkbox_AutoStart
             // 
@@ -460,6 +574,16 @@
             this.chkbox_AutoStart.TabIndex = 2;
             this.chkbox_AutoStart.Text = "Auto Start Up";
             this.chkbox_AutoStart.UseVisualStyleBackColor = true;
+            // 
+            // chkbox_BeginDailyQuest
+            // 
+            this.chkbox_BeginDailyQuest.AutoSize = true;
+            this.chkbox_BeginDailyQuest.Location = new System.Drawing.Point(10, 40);
+            this.chkbox_BeginDailyQuest.Name = "chkbox_BeginDailyQuest";
+            this.chkbox_BeginDailyQuest.Size = new System.Drawing.Size(118, 17);
+            this.chkbox_BeginDailyQuest.TabIndex = 14;
+            this.chkbox_BeginDailyQuest.Text = "Begin Daily Quest";
+            this.chkbox_BeginDailyQuest.UseVisualStyleBackColor = true;
             // 
             // container1
             // 
@@ -498,12 +622,14 @@
             this.tab_Mining.PerformLayout();
             this.tab_Options.ResumeLayout(false);
             this.tab_Options.PerformLayout();
-            this.container4.ResumeLayout(false);
-            this.container4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            this.container7.ResumeLayout(false);
+            this.container7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.container6.ResumeLayout(false);
             this.container2.ResumeLayout(false);
             this.container2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.container8.ResumeLayout(false);
             this.container5.ResumeLayout(false);
             this.container_WhenDone.ResumeLayout(false);
             this.container_WhenDone.PerformLayout();
@@ -538,9 +664,6 @@
         private System.Windows.Forms.Button btn_MoveTaskUp;
         private System.Windows.Forms.Button btn_MoveTaskDown;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
-        private Container container4;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TabPage tab_Extra;
@@ -554,5 +677,18 @@
         private System.Windows.Forms.CheckBox chkbox_RunPlugin;
         public System.Windows.Forms.Label label_Name;
         private System.Windows.Forms.TabPage tab_Overview;
+        private System.Windows.Forms.TabPage tab_Combat;
+        private System.Windows.Forms.Label label8;
+        private Container container7;
+        private System.Windows.Forms.CheckBox chkbox_SkipBusyNodes;
+        private System.Windows.Forms.CheckBox chkbox_FightAggroMobs;
+        private System.Windows.Forms.CheckBox chkbox_AutoLevelUp;
+        private System.Windows.Forms.CheckBox chkbox_BeginDailyQuest;
+        private System.Windows.Forms.CheckBox chkbox_FinishDailyQuest;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.Label label6;
+        private Container container8;
+        private System.Windows.Forms.ComboBox cmbox_PortalsList;
     }
 }
