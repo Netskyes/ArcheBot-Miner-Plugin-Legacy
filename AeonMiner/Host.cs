@@ -1,49 +1,34 @@
 ﻿using System;
 using System.IO;
-using System.Windows.Forms;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using ArcheBot.Bot.Classes;
 
 namespace AeonMiner
 {
     using UI;
     using Modules;
+    using Utility;
 
     public sealed class Host : Core
     {
-        #region Props & Fields
+        private bool initStop = false;
 
+        public static string PluginVersion()
+        {
+            return "3.0.0";
+        }
+
+#if !DEBUG
         /// <summary>
         /// Loads plugin into main app domain.
         /// </summary>
-        public static bool isReleaseVersion = false;
-
-        /// <summary>
-        /// Singleton instance access of host.
-        /// </summary>
-        public static Host Instance { get; private set; }
-        
-        /// <summary>
-        /// Main UI context cotroller.
-        /// </summary>
+        public static bool isReleaseVersion = true;
+#endif
         public UIContext UIContext { get; private set; }
-
-        /// <summary>
-        /// Module base manager.
-        /// </summary>
         public BaseModule BaseModule { get; private set; }
 
-
-        public static string PluginVersion = "3.0.0";
-
-        private bool initStop = false;
-
-        #endregion
-
+        
         private void CheckResources()
         {
             if (!Directory.Exists(Paths.Folder))
@@ -74,13 +59,18 @@ namespace AeonMiner
             }
         }
 
+        public bool IsGameReady()
+        {
+            return me != null && gameState == GameState.Ingame;
+        }
+
+
         private void Initialize()
         {
             CheckResources();
 
-            Instance = this;
-            UIContext = new UIContext(new Window());
-            BaseModule = new BaseModule();
+            UIContext = new UIContext(new Window(this));
+            BaseModule = new BaseModule(this);
 
             // Console Text Color
             LogSetColor(System.Drawing.Color.White);
@@ -88,17 +78,19 @@ namespace AeonMiner
 
         public void PluginRun()
         {
-            Log("Loading or not in game...");
+            if (!IsGameReady())
+            {
+                Log("Loading or not in game...");
 
-            while (gameState != GameState.Ingame || me == null)
-                Utils.Sleep(50);
+                while (!IsGameReady()) Utils.Sleep(50);
+            }
 
             ClearLogs();
-            Log("AeonMiner v." + PluginVersion);
+            Log("AeonMiner v." + PluginVersion());
 
 
-            Initialize();
             Debug();
+            Initialize();
 
 
             UIContext.Load();
@@ -128,6 +120,39 @@ namespace AeonMiner
         // DEBUG
         private void Debug()
         {
+        }
+
+
+        private Package GetPackage()
+        {
+            var pack = Serializer.FileToJsonObject<Package>(Paths.PackageFile);
+
+            if (pack == null)
+            {
+                return WritePackage();
+            }
+
+            return pack;
+        }
+
+        private Package WritePackage()
+        {
+            // Build package
+            var package = new Package();
+                package.DateTime = DateTime.Now;
+
+            Serializer.ToJsonString(package, Paths.PackageFile);
+
+            return package;
+        }
+
+        private Telemetry GetTelemetry()
+        {
+            var pack = new Telemetry();
+            pack.Name = "Test";
+            pack.DateTime = DateTime.Now;
+
+            return pack;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ArcheBot.Bot.Classes;
+using System.Diagnostics;
 
 namespace AeonMiner.Modules
 {
@@ -13,12 +14,17 @@ namespace AeonMiner.Modules
 
     public sealed partial class BaseModule : Helpers
     {
+        private Stats stats;
+
         private State state = State.Check;
+        private NodeHandle node;
         private bool isMoving;
 
+        public event StatsUpdateEventHandler StatsUpdated;
+        public delegate void StatsUpdateEventHandler(Stats stats);
 
         /// <summary>
-        /// Initialize assets.
+        /// Initialize runtime.
         /// </summary>
         private bool Initialize()
         {
@@ -32,18 +38,30 @@ namespace AeonMiner.Modules
                 return false;
 
 
-            // Default vars
             state = State.Check;
+
+            if ((stats == null) || UI.ResetStats())
+            {
+                SetupStats();
+            }
+
+
+            // Events
+            Host.onLaborAmountChanged += OnLaborAmountChanged;
+            Host.onNewInvItem += OnNewInvItem;
+
+            // Start tasks
+            Task.Run(() => RunTimer(), token);
 
             return true;
         }
 
         /// <summary>
-        /// Execution loop task.
+        /// Loop execution task.
         /// </summary>
         private void Loop()
         {
-            while (!token.IsCancellationRequested)
+            while (token.IsAlive())
             {
                 try
                 {
@@ -82,6 +100,8 @@ namespace AeonMiner.Modules
 
         private void Execute()
         {
+            /// ... Combat Check Here!
+
             switch (state)
             {
                 case State.Check:
@@ -122,15 +142,27 @@ namespace AeonMiner.Modules
 
         private void Search()
         {
-            if (mining.GetTarget())
+            if ((node = mining.GetNode()) == null)
             {
-                SetState(State.Move);
+                if (TryPatrolToPoint())
+                {
+                    // Patrol delay
+                    Utils.Delay(2450, 4250, token);
+                }
+
+                return;
             }
+
+            if (!mining.IsNodeCheck())
+                return;
+
+
+            SetState(State.Move);
         }
 
         private void Move()
         {
-            if (mining.DistToTarget() < 2)
+            if (node.Dist() < 2)
             {
                 SetState(State.Mine);
                 return;
@@ -139,15 +171,15 @@ namespace AeonMiner.Modules
 
             isMoving = true;
 
-            Task.Run(() => MovingWatch(), token);
+            Task.Run(() => MovingWatch(node.Get()), token);
 
 
-            bool result = mining.MoveToTarget();
+            bool result = mining.MoveToNode();
             isMoving = false;
-
 
             if (!token.IsAlive())
                 return;
+
 
             if (result)
             {
@@ -157,45 +189,136 @@ namespace AeonMiner.Modules
             }
             else
             {
+                Log(Host.GetLastError().ToString());
                 SetState(State.Check);
             }
         }
 
         private void Mine()
         {
-            if (mining.MineVein())
+            if (!IsQuestTakeLocked() && node.IsFortunaVein())
             {
+                TakeMiningQuest();
+            }
+
+
+            bool result = mining.MineVein();
+
+            if (!token.IsAlive())
+                return;
+
+
+            if (result)
+            {
+                stats.VeinsMined++;
+
+                if (node.IsFortunaVein(true))
+                {
+                    stats.FortunaVeins += 1;
+                }
+                else if (node.IsUnidentifiedVein(true))
+                {
+                    stats.UnidentifiedVeins += 1;
+                }
+
+                OnStatsUpdate();
+
+
                 if (settings.AutoLevelUp && CanUpgradeLevel(13))
                 {
                     UpgradeLevel(13);
                 }
 
-                Utils.Delay(850, 1450, token);
-
-
-                SetState(State.Check);
-                return;
+                Utils.Delay(650, 850, token);
             }
 
-
+            
             SetState(State.Check);
         }
 
 
+        private void RunTimer()
+        {
+            while (token.IsAlive())
+            {
+                stats.RunTime += 1;
+                long elapse = TimeSpan.FromSeconds(stats.RunTime).Ticks;
 
-        private void MovingWatch()
+                long avgMines = (stats.VeinsMined % stats.RunTime);
+                stats.AvgMinedPerHour = avgMines;
+
+                
+                Utils.InvokeOn(UI, () =>
+                {
+                    UI.lbl_RunTime.Text = new DateTime(elapse).ToString("HH:mm:ss");
+                    UI.lbl_AvgMinedPerHour.Text = avgMines.ToString();
+                });
+
+                Utils.Delay(1000, token);
+            }
+        }
+
+        private void PatrolWatch()
         {
             while (isMoving && token.IsAlive())
             {
                 try
                 {
-                    if (mining.DistToTarget() > 5.5)
+                    if (mining.GetNode() != null)
                     {
-                        TryDashing();
+                        Host.CancelMoveTo();
+                        break;
                     }
-                    else
+                }
+                catch
+                {
+                }
+
+                Utils.Delay(50, token);
+            }
+        }
+
+        private void MovingWatch(double x, double y, double z, bool isNavMesh = true)
+        {
+            Func<double> GetDist = () 
+                => (isNavMesh) ? GetNavDist(x, y, z) : Host.dist(x, y, z);
+
+            // Starting distance
+            double beginDist = GetDist();
+
+
+            while (isMoving && token.IsAlive())
+            {
+                try
+                {
+                    if (IsFreerunEnabled())
                     {
-                        CancelAnyBuffs(Buffs.Dash);
+                        TryFreerun();
+                    }
+
+                    if (isNavMesh && IsWarpingEnabled())
+                    {
+                        TryWarping(x, y, z);
+                    }
+
+                    if (beginDist >= 16)
+                    {
+                        if (settings.UseDash)
+                        {
+                            if (Host.dist(x, y, z) > 7.5) // Increment dist by boosts used.
+                            {
+                                TryDashing();
+                            }
+                            else
+                            {
+                                CancelAnyBuffs(Buffs.Dash);
+                            }
+                        }
+
+                        if (IsQuickstepEnabled() && Host.dist(x, y, z) > 6.5)
+                        {
+                            TryQuickstep();
+                        }
                     }
                 }
                 catch
@@ -209,6 +332,29 @@ namespace AeonMiner.Modules
             CancelBoosts();
         }
 
+
+        private bool TryPatrolToPoint()
+        {
+            if (!AnyPatrolPoints())
+                return false;
+
+            var point = GetPatrolPoints().OrderByDescending(p => GetNavDist(p.x, p.y, p.z)).First();
+
+
+            isMoving = true;
+
+            Task.Run(() => PatrolWatch(), token);
+            Task.Run(() => MovingWatch(point.x, point.y, point.z), token);
+
+
+            Log("Moving to patrol point: " + point.name);
+
+            bool result = Host.ComeTo(point.x, point.y, point.z);
+            isMoving = false;
+
+            return result;
+        }
+
         private void TryDashing()
         {
             bool isDashActive = IsAnyBuffExists(Buffs.Dash);
@@ -218,9 +364,9 @@ namespace AeonMiner.Modules
                 ? 50 : 20;
 
 
-            if (mpp > minMpp && !isDashActive && !IsAnyBuffExists(Buffs.Freerunner))
+            if (!InCombat() && !Host.me.isGlobalCooldown && mpp > minMpp && !isDashActive && !IsAnyBuffExists(Buffs.Freerunner))
             {
-                Host.UseSkill(16287);
+                Host.UseSkill(Skills.Dash);
             }
 
             else if (isDashActive && mpp <= (minMpp - 10))
@@ -229,12 +375,185 @@ namespace AeonMiner.Modules
             }
         }
 
+        private void TryWarping(double destX, double destY, double destZ)
+        {
+            var point = new Point3D(GetRayCast(18));
+            var landingZone = new RoundZone(destX, destY, 8);
+
+            double x = point.X,
+                   y = point.Y,
+                   z = point.Z, polyZ = 0;
+
+
+            var poly = gps.GetAllGpsPolygons().Find(p => p.PointInZone(x, y));
+
+            if (poly != null)
+            {
+                polyZ = poly.points.OrderBy(p => Host.dist(p.x, p.y, p.z)).First().z;
+            }
+
+
+            bool isCastReady = ((InNavMesh(x, y, z) && (Host.me.Z + 3.5) > Host.getZFromHeightMap(x, y)) 
+                            || (IsPointInMesh(x, y) 
+                            && polyZ != 0 && (Host.me.Z + 3.5) > polyZ))
+
+                            && Host.me.dist(x, y) < Host.me.dist(destX, destY)
+                            && GetNavDist(x, y, z, destX, destY, destZ) < GetNavDist(destX, destY, destZ)
+                            && landingZone.PointInZone(point.X, point.Y);
+
+
+            if (isCastReady && Host.UseSkill(Skills.Teleportation))
+            {
+                // Add to cooldown
+            }
+        }
+
+        private void TryQuickstep()
+        {
+            int minMpp = (settings.FightAggroMobs) 
+                ? 20 : 10;
+
+            bool isQuickstepReady = !IsAnyBuffExists(Buffs.QuickstepBuffs) 
+                
+                && (Host.me.mp > minMpp)
+                && !Host.me.isGlobalCooldown;
+
+
+            if (isQuickstepReady)
+            {
+                Host.UseSkill(Skills.Quickstep);
+            }
+        }
+
+        private void TryFreerun()
+        {
+            bool isFreerunReady = !IsAnyBuffExists(Buffs.Freerunner) 
+                
+                && (Host.me.mpp > 10) 
+                && (Host.skillCooldown(Skills.Freerunner) == 0)
+                && !Host.me.isGlobalCooldown;
+                
+
+            if (isFreerunReady)
+            {
+                Host.UseSkill(Skills.Freerunner);
+            }
+        }
+
+        private void TryCometsBoon()
+        {
+            int minMpp = (settings.FightAggroMobs)
+                ? 40 : 20;
+
+            var isCometReady = (Host.skillCooldown(Skills.CometsBoon) == 0)
+
+                && (Host.me.mpp > minMpp)
+                && !Host.me.isGlobalCooldown;
+
+
+            if (isCometReady)
+            {
+                Host.UseSkill(Skills.CometsBoon);
+            }
+        }
+
+        private void TakeMiningQuest()
+        {
+            if (!IsQuestActive(6779) && Host.StartQuest(6779))
+            {
+                Utils.Delay(850, token);
+            }
+        }
+
+
+        private void SetupStats()
+        {
+            stats = new Stats();
+            stats.ZoneName = mineTask.MiningZone;
+            stats.LaborStartedWith = Host.me.laborPoints;
+
+            Utils.InvokeOn(UI, () => UI.lbl_LaborRemaining.Text = Host.me.laborPoints.ToString());
+
+
+            OnStatsUpdate();
+        }
+
+        private void OnStatsUpdate()
+        {
+            StatsUpdated?.Invoke(stats);
+        }
+
+        private void OnLaborAmountChanged(int count)
+        {
+            stats.LaborBurned += Math.Abs(count);
+            Utils.InvokeOn(UI, () => UI.lbl_LaborRemaining.Text = Host.me.laborPoints.ToString());
+
+            OnStatsUpdate();
+        }
+
+        private void OnNewInvItem(Item item, int count)
+        {
+            if (!MiningNodes.IsProduct(item.id))
+                return;
+
+            UI.AddToMined(item, count);
+        }
+
+        #region Helpers
+
+        private void MovingWatch(SpawnObject obj) => MovingWatch(obj.X, obj.Y, obj.Z);
+
+        private bool IsWarpingEnabled()
+        {
+            return settings.UseTeleportation && Host.isSkillLearned(Skills.Teleportation);
+        }
+
+        private bool IsQuickstepEnabled()
+        {
+            return settings.UseQuickstep && Host.isSkillLearned(Skills.Quickstep);
+        }
+
+        private bool IsFreerunEnabled()
+        {
+            return settings.UseFreerunner && Host.isSkillLearned(Skills.Freerunner);
+        }
+
+        private bool IsCometBoonEnabled()
+        {
+            return settings.UseCometsBoon && Host.isSkillLearned(Skills.CometsBoon);
+        }
+
+        private bool IsQuestTakeLocked()
+        {
+            return (!settings.BeginDailyQuest || IsQuestActive(6779) || GetProfLevel(13) < 50000);
+        }
+
+        private bool IsPointInMesh(double x, double y)
+        {
+            return gps.GetAllGpsPolygons().Any(p => p.PointInZone(x, y));
+        }
+
+        private List<GpsPoint> GetPatrolPoints()
+        {
+            return gps.GetAllGpsPoints().Where(p => p.name.ToLower().Contains("patrol")).ToList();
+        }
+
+        private bool AnyPatrolPoints()
+        {
+            return GetPatrolPoints().Count() > 0;
+        }
+
+
         private void CancelBoosts()
         {
             CancelAnyBuffs(Buffs.Dash);
         }
 
-        #region Helpers
+        private void CancelEvents()
+        {
+            Host.onLaborAmountChanged -= OnLaborAmountChanged;
+            Host.onNewInvItem -= OnNewInvItem;
+        }
 
         private void SetState(State state)
         {

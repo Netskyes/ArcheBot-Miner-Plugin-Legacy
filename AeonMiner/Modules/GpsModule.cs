@@ -12,13 +12,11 @@ namespace AeonMiner.Modules
 
     internal class GpsModule : Gps
     {
-        private Host Host
-        {
-            get { return Host.Instance; }
-        }
+        private Host Host { get; set; }
 
         public GpsModule(Host host) : base(host)
         {
+            Host = host;
         }
 
 

@@ -7,20 +7,19 @@ using System.Threading.Tasks;
 
 namespace AeonMiner.Modules
 {
+    using Preferences;
+
     internal class CombatModule
     {
+        private Host Host { get; set; }
+        private Settings settings;
         private CancellationToken token;
 
-        private Host Host
+        public CombatModule(Settings settings, Host host, GpsModule gps, CancellationToken token)
         {
-            get { return Host.Instance; }
-        }
-
-        public CombatModule(CancellationToken token)
-        {
+            Host = host;
             this.token = token;
+            this.settings = settings;
         }
-
-
     }
 }

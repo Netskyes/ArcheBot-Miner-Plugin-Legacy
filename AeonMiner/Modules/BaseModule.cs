@@ -12,9 +12,11 @@ namespace AeonMiner.Modules
 
     public sealed partial class BaseModule
     {
-        private Host Host
+        private Host Host { get; set; }
+
+        public BaseModule(Host host) : base(host)
         {
-            get { return Host.Instance; }
+            Host = host;
         }
 
         private Window UI
@@ -23,6 +25,7 @@ namespace AeonMiner.Modules
         }
 
         // Tokens
+        private Task loopTask;
         private CancellationTokenSource ts;
         private CancellationToken token;
 
@@ -44,14 +47,14 @@ namespace AeonMiner.Modules
 
             // Initialize modules
             gps = new GpsModule(Host);
-            mining = new MiningModule(settings, token);
-            combat = new CombatModule(token);
+            mining = new MiningModule(settings, Host, gps, token);
+            combat = new CombatModule(settings, Host, gps, token);
 
 
             return Initialize();
         }
 
-        private void BeginLoop() => Task.Run(() => Loop(), token);
+        private void BeginLoop() => loopTask = Task.Run(() => Loop(), token);
 
 
         public async void Start()
@@ -61,7 +64,7 @@ namespace AeonMiner.Modules
             token = ts.Token;
 
             // Lock button
-            UI.UpdateButtonState("...", false);
+            UI.UpdateButtonState("Loading...", false);
 
 
             bool result = await Task.Run(() => Setup(), token);
@@ -82,7 +85,7 @@ namespace AeonMiner.Modules
         public void Stop()
         {
             // Lock button
-            UI.UpdateButtonState("...", false);
+            UI.UpdateButtonState("Stopping...", false);
 
             CancelActions();
             
@@ -105,6 +108,13 @@ namespace AeonMiner.Modules
             Host.MoveForward(false);
 
             CancelBoosts();
+            CancelEvents();
+
+            // Wait for task to terminate
+            while (loopTask.Status == TaskStatus.Running)
+            {
+                Utils.Sleep(10);
+            }
         }
     }
 }

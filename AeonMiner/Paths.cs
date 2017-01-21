@@ -41,5 +41,10 @@ namespace AeonMiner
         {
             get { return Path.Combine(PluginPath, @"Settings\"); }
         }
+
+        public static string PackageFile
+        {
+            get { return PluginPath + "package.json";  }
+        }
     }
 }

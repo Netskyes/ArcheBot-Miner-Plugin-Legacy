@@ -16,36 +16,85 @@ namespace AeonMiner.Modules
 
     internal class MiningModule : Helpers
     {
+        private Host Host { get; set; }
         private Settings settings;
         private CancellationToken token;
+        private Gps gps;
 
-        private Host Host
+        public MiningModule(Settings settings, Host host, GpsModule gps, CancellationToken token) : base(host)
         {
-            get { return Host.Instance; }
-        }
-
-        public MiningModule(Settings settings, CancellationToken token)
-        {
+            Host = host;
             this.token = token;
             this.settings = settings;
+            this.gps = gps;
+
+            Initialize();
         }
 
         private NodeHandle node;
         private int prevHash { get; set; }
-        private int skipNode { get; set; }
-        private List<int> ignoreNodes = new List<int>();
-        private List<uint> ignorePhases = new List<uint>();
 
         private bool isMiningNode;
         private bool isMovingToNode;
 
+        private List<int> skipNodes = new List<int>();
+        private List<int> ignoreNodes = new List<int>();
+        private List<uint> ignorePhases = new List<uint>();
 
-        public bool GetTarget()
+        
+        private void Initialize()
         {
-            GetNode();
-
-            return node != null && node.Exists();
+            if (GetProfLevel(13) < 230000)
+            {
+                foreach (var phase in MiningNodes.Veins.Unidentified)
+                {
+                    ignorePhases.Add(phase);
+                }
+            }
         }
+
+        public NodeHandle GetNode()
+        {
+            node = FindNode();
+
+            return (node != null && node.Exists()) ? node : null;
+        }
+
+        public bool IsNodeCheck()
+        {
+            if (node == null || !node.Exists())
+                return false;
+
+
+            if (settings.SkipBusyNodes)
+            {
+                if (node.IsBusy())
+                {
+                    Log("Node busy, skipping...");
+                    skipNodes.Add(node.GetHashCode());
+
+                    return false;
+                }
+                else
+                {
+                    skipNodes.Clear();
+                }
+            }
+            
+
+            var edgePoint = gps.GetNearestPoint(node.X, node.Y, node.Z);
+            var distPoint = (edgePoint != null) ? node.Get().dist(edgePoint.x, edgePoint.y, edgePoint.z) : 0;
+
+            if (!InNavMesh(node.Get()) && distPoint > 8)
+            {
+                ignoreNodes.Add(node.GetHashCode());
+
+                return false;
+            }
+
+            return true;
+        }
+
 
         public bool MineVein()
         {
@@ -59,13 +108,11 @@ namespace AeonMiner.Modules
 
 
             isMiningNode = true;
-
+            
             Task.Run(() => MiningWatch(), token);
 
 
-            uint phaseId = node.Get().phaseId;
             bool isMined = node.Mine();
-
             isMiningNode = false;
 
 
@@ -74,7 +121,7 @@ namespace AeonMiner.Modules
 
             if (isMined)
             {
-                while (node.Exists() && node.Get().phaseId == phaseId)
+                while (node.Exists() && node.BeginPhase == node.Get().phaseId)
                 {
                     Utils.Delay(50, token);
                 }
@@ -89,7 +136,11 @@ namespace AeonMiner.Modules
             {
                 try
                 {
-                    if ((settings.FightAggroMobs && InCombat()))
+                    bool isCancel = (Host.me.isCasting && !node.CanMine()) 
+                        || (settings.FightAggroMobs && InCombat());
+
+
+                    if (isCancel)
                     {
                         Host.CancelSkill();
                         break;
@@ -105,7 +156,7 @@ namespace AeonMiner.Modules
         }
 
 
-        public bool MoveToTarget()
+        public bool MoveToNode()
         {
             if (Host.dist(node.Get()) < 2)
                 return true;
@@ -116,10 +167,10 @@ namespace AeonMiner.Modules
             Task.Run(() => MovingWatch(), token);
             
 
-            bool result = Host.ComeTo(node.Get(), Utils.RandomDouble(0.8, 1.2));
+            bool isComeTo = Host.ComeTo(node.X, node.Y, node.Z, Utils.RandomDouble(0.8, 1.2));
             isMovingToNode = false;
 
-            return result;
+            return isComeTo;
         }
 
         private void MovingWatch()
@@ -128,15 +179,21 @@ namespace AeonMiner.Modules
             {
                 try
                 {
-                    if (!node.Exists() || (settings.FightAggroMobs && InCombat()))
+                    bool isCancel = !node.Exists() 
+                        || !node.CanMine() || (settings.FightAggroMobs && InCombat());
+
+
+                    if (isCancel)
                     {
+                        Log("Cancelling move: 1");
                         Host.CancelMoveTo();
                         break;
                     }
 
                     if (settings.SkipBusyNodes && node.IsBusy())
                     {
-                        skipNode = node.GetHashCode();
+                        Log("Cancelling move: 2");
+                        skipNodes.Add(node.GetHashCode());
 
                         Host.CancelMoveTo();
                         break;
@@ -152,7 +209,7 @@ namespace AeonMiner.Modules
         }
 
 
-        private void GetNode()
+        private NodeHandle FindNode()
         {
             if (node != null)
             {
@@ -162,34 +219,33 @@ namespace AeonMiner.Modules
 
             node = null;
 
-            var nodes = Host.getDoodads().Where
-                (d => MiningNodes.Exists(d.phaseId) 
-                && skipNode != d.GetHashCode() 
-                && !ignorePhases.Contains(d.phaseId) && !ignoreNodes.Contains(d.GetHashCode()));
+            var nodes = Host.getDoodads().Where(d => MiningNodes.Exists(d.phaseId)
+
+                && !ignorePhases.Contains(d.phaseId)
+                && !skipNodes.Contains(d.GetHashCode()) 
+                && !ignoreNodes.Contains(d.GetHashCode())
+                && GetNavDist(d) <= 200);
 
 
             int count = nodes.Count();
 
             if (count < 1)
-                return;
+                return null;
 
+
+            DoodadObject temp = null;
 
             if (count == 1)
             {
-                node = new NodeHandle(nodes.First());
-                return;
+                temp = nodes.First();
+            }
+            else
+            {
+                temp = nodes.OrderBy(d => GetNavDist(d)).ThenBy(d => Host.dist(d)).First();
             }
 
 
-            // Consider Z later
-            var bestNode = nodes.OrderBy(d => Host.dist(d)).First();
-
-            node = new NodeHandle(bestNode);
-        }
-
-        public double DistToTarget()
-        {
-            return (node != null && node.Exists()) ? Host.dist(node.Get()) : 0;
+            return (new NodeHandle(temp, Host));
         }
     }
 }

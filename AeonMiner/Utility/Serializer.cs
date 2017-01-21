@@ -2,6 +2,7 @@
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace AeonMiner.Utility
 {
@@ -59,6 +60,47 @@ namespace AeonMiner.Utility
             }
             catch { }
             return false;
+        }
+
+        public static string ToJsonString(object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
+        public static T ToJsonObject<T>(string json)
+        {
+            return (T)JsonConvert.DeserializeObject(json);
+        }
+
+        public static bool ToJsonString(object obj, string path)
+        {
+            var serializer = new JsonSerializer();
+
+            try
+            {
+                using (var sw = new StreamWriter(path))
+                using (var writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, obj);
+                }
+
+                return true;
+            }
+            catch { }
+            return false;
+        }
+
+        public static T FileToJsonObject<T>(string path)
+        {
+            try
+            {
+                using (var sr = new StreamReader(path))
+                {
+                    return JsonConvert.DeserializeObject<T>(sr.ReadToEnd());
+                }
+            }
+            catch { }
+            return default(T);
         }
     }
 }

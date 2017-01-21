@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
+using System.Net;
+using System.Net.Http;
 
 namespace AeonMiner
 {
@@ -21,15 +23,6 @@ namespace AeonMiner
             }
         }
 
-        public static string GenerateMD5Hash(string value)
-        {
-            MD5 md5 = MD5.Create();
-            byte[] input = Encoding.UTF8.GetBytes(value);
-            byte[] hash = md5.ComputeHash(input);
-
-            return BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
-        }
-
         public static void Delay(int ms, CancellationToken token)
         {
             Task.Delay(ms, token).Wait();
@@ -38,38 +31,6 @@ namespace AeonMiner
         public static void Delay(int min, int max, CancellationToken token)
         {
             Task.Delay(RandomNum(min, max), token).Wait();
-        }
-
-        public static void Delay(int[] setA, int[] setB, CancellationToken token)
-        {
-            switch (RandomNum(0, 2))
-            {
-                case 0:
-                    Delay(setA[0], setA[1], token);
-                    break;
-
-                case 1:
-                    Delay(setB[0], setB[1], token);
-                    break;
-            }
-        }
-
-        public static void Delay(int[] setA, int[] setB, int[] setC, CancellationToken token)
-        {
-            switch (RandomNum(0, 3))
-            {
-                case 0:
-                    Delay(setA[0], setA[1], token);
-                    break;
-
-                case 1:
-                    Delay(setB[0], setB[1], token);
-                    break;
-
-                case 2:
-                    Delay(setC[0], setC[1], token);
-                    break;
-            }
         }
 
         public static void Sleep(int ms)
@@ -89,39 +50,6 @@ namespace AeonMiner
         {
             Random rand = new Random();
             return rand.Next(min, max);
-        }
-
-        public static int RandomNum(int[] setA, int[] setB)
-        {
-            switch (RandomNum(0, 2))
-            {
-                case 0:
-                    return RandomNum(setA[0], setA[1]);
-
-                case 1:
-                    return RandomNum(setB[0], setB[1]);
-
-                default:
-                    return 0;
-            }
-        }
-
-        public static int RandomNum(int[] setA, int[] setB, int[] setC)
-        {
-            switch (RandomNum(0, 3))
-            {
-                case 0:
-                    return RandomNum(setA[0], setA[1]);
-
-                case 1:
-                    return RandomNum(setB[0], setB[1]);
-
-                case 2:
-                    return RandomNum(setC[0], setC[1]);
-
-                default:
-                    return 0;
-            }
         }
 
         public static double RandomDouble(double min, double max)
@@ -148,6 +76,25 @@ namespace AeonMiner
             }
 
             return retArray;
+        }
+
+        public static string GenerateMD5Hash(string value)
+        {
+            MD5 md5 = MD5.Create();
+            byte[] input = Encoding.UTF8.GetBytes(value);
+            byte[] hash = md5.ComputeHash(input);
+
+            return BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
+        }
+
+        public static async Task<HttpStatusCode> HttpJsonPost(string uri, string json)
+        {
+            var client = new HttpClient();
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var res = await client.PostAsync(uri, content);
+
+            return res.StatusCode;
         }
     }
 }
