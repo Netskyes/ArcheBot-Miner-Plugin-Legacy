@@ -108,7 +108,7 @@ namespace AeonMiner.Modules
             Host.MoveForward(false);
 
             CancelBoosts();
-            CancelEvents();
+            UnhookEvents();
 
             // Wait for task to terminate
             while (loopTask.Status == TaskStatus.Running)

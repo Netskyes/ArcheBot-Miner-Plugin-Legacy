@@ -41,6 +41,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tab_Extra = new System.Windows.Forms.TabPage();
+            this.label12 = new System.Windows.Forms.Label();
             this.txtbox_ItemSearch = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -48,7 +49,8 @@
             this.tab_Overview = new System.Windows.Forms.TabPage();
             this.label9 = new System.Windows.Forms.Label();
             this.btn_Start = new System.Windows.Forms.Button();
-            this.label12 = new System.Windows.Forms.Label();
+            this.chkbox_ResetStats = new System.Windows.Forms.CheckBox();
+            this.label18 = new System.Windows.Forms.Label();
             this.container7 = new Container();
             this.chkbox_AutoLevelUp = new System.Windows.Forms.CheckBox();
             this.chkbox_FightAggroMobs = new System.Windows.Forms.CheckBox();
@@ -96,11 +98,18 @@
             this.btn_AddToCleanItems = new System.Windows.Forms.Button();
             this.lbox_CleanItems = new System.Windows.Forms.ListBox();
             this.container13 = new Container();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtbox_GameLog = new System.Windows.Forms.TextBox();
             this.container4 = new Container();
-            this.chkbox_ResetStats = new System.Windows.Forms.CheckBox();
+            this.lbl_EstimatingTime = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
+            this.lbl_PlayersPeak = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.lbl_SuspectReports = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
             this.lbl_AvgMinedPerHour = new System.Windows.Forms.Label();
+            this.lbl_WhispersReceived = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
             this.lbl_UniVeins = new System.Windows.Forms.Label();
             this.lbl_FortunaVeins = new System.Windows.Forms.Label();
             this.lbl_VeinsMined = new System.Windows.Forms.Label();
@@ -296,6 +305,16 @@
             this.tab_Extra.Text = "Extra";
             this.tab_Extra.UseVisualStyleBackColor = true;
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.ForeColor = System.Drawing.Color.Gray;
+            this.label12.Location = new System.Drawing.Point(13, 196);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(95, 13);
+            this.label12.TabIndex = 40;
+            this.label12.Text = "Inventory cleaner";
+            // 
             // txtbox_ItemSearch
             // 
             this.txtbox_ItemSearch.Location = new System.Drawing.Point(8, 28);
@@ -335,8 +354,10 @@
             // 
             // tab_Overview
             // 
-            this.tab_Overview.Controls.Add(this.container13);
+            this.tab_Overview.Controls.Add(this.label18);
+            this.tab_Overview.Controls.Add(this.chkbox_ResetStats);
             this.tab_Overview.Controls.Add(this.label9);
+            this.tab_Overview.Controls.Add(this.container13);
             this.tab_Overview.Controls.Add(this.container4);
             this.tab_Overview.Location = new System.Drawing.Point(4, 22);
             this.tab_Overview.Name = "tab_Overview";
@@ -367,15 +388,25 @@
             this.btn_Start.UseVisualStyleBackColor = true;
             this.btn_Start.Click += new System.EventHandler(this.btn_Start_Click);
             // 
-            // label12
+            // chkbox_ResetStats
             // 
-            this.label12.AutoSize = true;
-            this.label12.ForeColor = System.Drawing.Color.Gray;
-            this.label12.Location = new System.Drawing.Point(13, 196);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(95, 13);
-            this.label12.TabIndex = 40;
-            this.label12.Text = "Inventory cleaner";
+            this.chkbox_ResetStats.AutoSize = true;
+            this.chkbox_ResetStats.Location = new System.Drawing.Point(264, 10);
+            this.chkbox_ResetStats.Name = "chkbox_ResetStats";
+            this.chkbox_ResetStats.Size = new System.Drawing.Size(82, 17);
+            this.chkbox_ResetStats.TabIndex = 2;
+            this.chkbox_ResetStats.Text = "Reset Stats";
+            this.chkbox_ResetStats.UseVisualStyleBackColor = true;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.ForeColor = System.Drawing.Color.Gray;
+            this.label18.Location = new System.Drawing.Point(13, 249);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(60, 13);
+            this.label18.TabIndex = 11;
+            this.label18.Text = "Events log";
             // 
             // container7
             // 
@@ -859,28 +890,36 @@
             // 
             // container13
             // 
-            this.container13.Controls.Add(this.textBox1);
-            this.container13.Location = new System.Drawing.Point(8, 211);
+            this.container13.Controls.Add(this.txtbox_GameLog);
+            this.container13.Location = new System.Drawing.Point(8, 257);
             this.container13.Name = "container13";
             this.container13.Padding = new System.Windows.Forms.Padding(3);
-            this.container13.Size = new System.Drawing.Size(361, 146);
+            this.container13.Size = new System.Drawing.Size(361, 114);
             this.container13.TabIndex = 10;
             // 
-            // textBox1
+            // txtbox_GameLog
             // 
-            this.textBox1.BackColor = System.Drawing.Color.White;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Location = new System.Drawing.Point(6, 6);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(349, 134);
-            this.textBox1.TabIndex = 9;
+            this.txtbox_GameLog.BackColor = System.Drawing.Color.White;
+            this.txtbox_GameLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtbox_GameLog.Location = new System.Drawing.Point(6, 18);
+            this.txtbox_GameLog.Multiline = true;
+            this.txtbox_GameLog.Name = "txtbox_GameLog";
+            this.txtbox_GameLog.ReadOnly = true;
+            this.txtbox_GameLog.Size = new System.Drawing.Size(349, 90);
+            this.txtbox_GameLog.TabIndex = 9;
             // 
             // container4
             // 
-            this.container4.Controls.Add(this.chkbox_ResetStats);
+            this.container4.Controls.Add(this.lbl_EstimatingTime);
+            this.container4.Controls.Add(this.label26);
+            this.container4.Controls.Add(this.lbl_PlayersPeak);
+            this.container4.Controls.Add(this.label20);
+            this.container4.Controls.Add(this.lbl_SuspectReports);
+            this.container4.Controls.Add(this.label22);
             this.container4.Controls.Add(this.lbl_AvgMinedPerHour);
+            this.container4.Controls.Add(this.lbl_WhispersReceived);
             this.container4.Controls.Add(this.label19);
+            this.container4.Controls.Add(this.label27);
             this.container4.Controls.Add(this.lbl_UniVeins);
             this.container4.Controls.Add(this.lbl_FortunaVeins);
             this.container4.Controls.Add(this.lbl_VeinsMined);
@@ -898,45 +937,115 @@
             this.container4.Controls.Add(this.container12);
             this.container4.Location = new System.Drawing.Point(8, 18);
             this.container4.Name = "container4";
-            this.container4.Size = new System.Drawing.Size(578, 187);
+            this.container4.Size = new System.Drawing.Size(578, 227);
             this.container4.TabIndex = 7;
             // 
-            // chkbox_ResetStats
+            // lbl_EstimatingTime
             // 
-            this.chkbox_ResetStats.AutoSize = true;
-            this.chkbox_ResetStats.Location = new System.Drawing.Point(16, 155);
-            this.chkbox_ResetStats.Name = "chkbox_ResetStats";
-            this.chkbox_ResetStats.Size = new System.Drawing.Size(82, 17);
-            this.chkbox_ResetStats.TabIndex = 2;
-            this.chkbox_ResetStats.Text = "Reset Stats";
-            this.chkbox_ResetStats.UseVisualStyleBackColor = true;
+            this.lbl_EstimatingTime.AutoSize = true;
+            this.lbl_EstimatingTime.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbl_EstimatingTime.ForeColor = System.Drawing.Color.DimGray;
+            this.lbl_EstimatingTime.Location = new System.Drawing.Point(121, 126);
+            this.lbl_EstimatingTime.Name = "lbl_EstimatingTime";
+            this.lbl_EstimatingTime.Size = new System.Drawing.Size(49, 15);
+            this.lbl_EstimatingTime.TabIndex = 29;
+            this.lbl_EstimatingTime.Text = "00:00:00";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(13, 126);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(79, 13);
+            this.label26.TabIndex = 28;
+            this.label26.Text = "Time estimate:";
+            // 
+            // lbl_PlayersPeak
+            // 
+            this.lbl_PlayersPeak.AutoSize = true;
+            this.lbl_PlayersPeak.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbl_PlayersPeak.ForeColor = System.Drawing.Color.DimGray;
+            this.lbl_PlayersPeak.Location = new System.Drawing.Point(121, 162);
+            this.lbl_PlayersPeak.Name = "lbl_PlayersPeak";
+            this.lbl_PlayersPeak.Size = new System.Drawing.Size(13, 15);
+            this.lbl_PlayersPeak.TabIndex = 27;
+            this.lbl_PlayersPeak.Text = "0";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(13, 187);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(90, 13);
+            this.label20.TabIndex = 22;
+            this.label20.Text = "Suspect reports:";
+            // 
+            // lbl_SuspectReports
+            // 
+            this.lbl_SuspectReports.AutoSize = true;
+            this.lbl_SuspectReports.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbl_SuspectReports.ForeColor = System.Drawing.Color.DimGray;
+            this.lbl_SuspectReports.Location = new System.Drawing.Point(121, 187);
+            this.lbl_SuspectReports.Name = "lbl_SuspectReports";
+            this.lbl_SuspectReports.Size = new System.Drawing.Size(13, 15);
+            this.lbl_SuspectReports.TabIndex = 23;
+            this.lbl_SuspectReports.Text = "0";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(190, 187);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(103, 13);
+            this.label22.TabIndex = 24;
+            this.label22.Text = "Whispers received:";
             // 
             // lbl_AvgMinedPerHour
             // 
             this.lbl_AvgMinedPerHour.AutoSize = true;
             this.lbl_AvgMinedPerHour.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbl_AvgMinedPerHour.ForeColor = System.Drawing.Color.DimGray;
-            this.lbl_AvgMinedPerHour.Location = new System.Drawing.Point(291, 125);
+            this.lbl_AvgMinedPerHour.Location = new System.Drawing.Point(298, 125);
             this.lbl_AvgMinedPerHour.Name = "lbl_AvgMinedPerHour";
             this.lbl_AvgMinedPerHour.Size = new System.Drawing.Size(13, 15);
             this.lbl_AvgMinedPerHour.TabIndex = 21;
             this.lbl_AvgMinedPerHour.Text = "0";
             // 
+            // lbl_WhispersReceived
+            // 
+            this.lbl_WhispersReceived.AutoSize = true;
+            this.lbl_WhispersReceived.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbl_WhispersReceived.ForeColor = System.Drawing.Color.DimGray;
+            this.lbl_WhispersReceived.Location = new System.Drawing.Point(298, 187);
+            this.lbl_WhispersReceived.Name = "lbl_WhispersReceived";
+            this.lbl_WhispersReceived.Size = new System.Drawing.Size(13, 15);
+            this.lbl_WhispersReceived.TabIndex = 25;
+            this.lbl_WhispersReceived.Text = "0";
+            // 
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(180, 125);
+            this.label19.Location = new System.Drawing.Point(190, 125);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(88, 13);
             this.label19.TabIndex = 20;
             this.label19.Text = "Avg. mined p/h:";
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(13, 162);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(73, 13);
+            this.label27.TabIndex = 26;
+            this.label27.Text = "Players peak:";
             // 
             // lbl_UniVeins
             // 
             this.lbl_UniVeins.AutoSize = true;
             this.lbl_UniVeins.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbl_UniVeins.ForeColor = System.Drawing.Color.DimGray;
-            this.lbl_UniVeins.Location = new System.Drawing.Point(291, 100);
+            this.lbl_UniVeins.Location = new System.Drawing.Point(298, 100);
             this.lbl_UniVeins.Name = "lbl_UniVeins";
             this.lbl_UniVeins.Size = new System.Drawing.Size(13, 15);
             this.lbl_UniVeins.TabIndex = 18;
@@ -947,7 +1056,7 @@
             this.lbl_FortunaVeins.AutoSize = true;
             this.lbl_FortunaVeins.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbl_FortunaVeins.ForeColor = System.Drawing.Color.DimGray;
-            this.lbl_FortunaVeins.Location = new System.Drawing.Point(291, 75);
+            this.lbl_FortunaVeins.Location = new System.Drawing.Point(298, 75);
             this.lbl_FortunaVeins.Name = "lbl_FortunaVeins";
             this.lbl_FortunaVeins.Size = new System.Drawing.Size(13, 15);
             this.lbl_FortunaVeins.TabIndex = 17;
@@ -958,7 +1067,7 @@
             this.lbl_VeinsMined.AutoSize = true;
             this.lbl_VeinsMined.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbl_VeinsMined.ForeColor = System.Drawing.Color.DimGray;
-            this.lbl_VeinsMined.Location = new System.Drawing.Point(291, 50);
+            this.lbl_VeinsMined.Location = new System.Drawing.Point(298, 50);
             this.lbl_VeinsMined.Name = "lbl_VeinsMined";
             this.lbl_VeinsMined.Size = new System.Drawing.Size(13, 15);
             this.lbl_VeinsMined.TabIndex = 16;
@@ -967,7 +1076,7 @@
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(180, 75);
+            this.label23.Location = new System.Drawing.Point(190, 75);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(82, 13);
             this.label23.TabIndex = 15;
@@ -976,7 +1085,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(180, 100);
+            this.label24.Location = new System.Drawing.Point(190, 100);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(106, 13);
             this.label24.TabIndex = 14;
@@ -985,7 +1094,7 @@
             // label25
             // 
             this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(180, 50);
+            this.label25.Location = new System.Drawing.Point(190, 50);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(73, 13);
             this.label25.TabIndex = 13;
@@ -996,7 +1105,7 @@
             this.lbl_LaborRemaining.AutoSize = true;
             this.lbl_LaborRemaining.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbl_LaborRemaining.ForeColor = System.Drawing.Color.DimGray;
-            this.lbl_LaborRemaining.Location = new System.Drawing.Point(124, 101);
+            this.lbl_LaborRemaining.Location = new System.Drawing.Point(121, 101);
             this.lbl_LaborRemaining.Name = "lbl_LaborRemaining";
             this.lbl_LaborRemaining.Size = new System.Drawing.Size(13, 15);
             this.lbl_LaborRemaining.TabIndex = 12;
@@ -1007,7 +1116,7 @@
             this.lbl_LaborBurned.AutoSize = true;
             this.lbl_LaborBurned.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbl_LaborBurned.ForeColor = System.Drawing.Color.DimGray;
-            this.lbl_LaborBurned.Location = new System.Drawing.Point(124, 76);
+            this.lbl_LaborBurned.Location = new System.Drawing.Point(121, 76);
             this.lbl_LaborBurned.Name = "lbl_LaborBurned";
             this.lbl_LaborBurned.Size = new System.Drawing.Size(13, 15);
             this.lbl_LaborBurned.TabIndex = 11;
@@ -1018,7 +1127,7 @@
             this.lbl_LaborStartedWith.AutoSize = true;
             this.lbl_LaborStartedWith.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbl_LaborStartedWith.ForeColor = System.Drawing.Color.DimGray;
-            this.lbl_LaborStartedWith.Location = new System.Drawing.Point(124, 51);
+            this.lbl_LaborStartedWith.Location = new System.Drawing.Point(121, 51);
             this.lbl_LaborStartedWith.Name = "lbl_LaborStartedWith";
             this.lbl_LaborStartedWith.Size = new System.Drawing.Size(13, 15);
             this.lbl_LaborStartedWith.TabIndex = 10;
@@ -1078,7 +1187,7 @@
             this.container12.Controls.Add(this.dtg_Items);
             this.container12.Location = new System.Drawing.Point(360, 0);
             this.container12.Name = "container12";
-            this.container12.Size = new System.Drawing.Size(218, 187);
+            this.container12.Size = new System.Drawing.Size(218, 227);
             this.container12.TabIndex = 19;
             // 
             // dtg_Items
@@ -1099,7 +1208,7 @@
             this.dtg_Items.Name = "dtg_Items";
             this.dtg_Items.RowHeadersVisible = false;
             this.dtg_Items.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtg_Items.Size = new System.Drawing.Size(212, 181);
+            this.dtg_Items.Size = new System.Drawing.Size(212, 221);
             this.dtg_Items.TabIndex = 9;
             // 
             // dtg_ItemName
@@ -1256,9 +1365,18 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dtg_ItemCount;
         public System.Windows.Forms.Label lbl_AvgMinedPerHour;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.TextBox textBox1;
         private Container container13;
         private System.Windows.Forms.CheckBox chkbox_ResetStats;
         private System.Windows.Forms.DataGridView dtg_Items;
+        private System.Windows.Forms.TextBox txtbox_GameLog;
+        public System.Windows.Forms.Label lbl_SuspectReports;
+        private System.Windows.Forms.Label label20;
+        public System.Windows.Forms.Label lbl_WhispersReceived;
+        private System.Windows.Forms.Label label22;
+        public System.Windows.Forms.Label lbl_PlayersPeak;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label label18;
+        public System.Windows.Forms.Label lbl_EstimatingTime;
+        private System.Windows.Forms.Label label26;
     }
 }

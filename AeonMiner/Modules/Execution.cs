@@ -14,14 +14,11 @@ namespace AeonMiner.Modules
 
     public sealed partial class BaseModule : Helpers
     {
-        private Stats stats;
+        private Statistics stats;
 
         private State state = State.Check;
         private NodeHandle node;
         private bool isMoving;
-
-        public event StatsUpdateEventHandler StatsUpdated;
-        public delegate void StatsUpdateEventHandler(Stats stats);
 
         /// <summary>
         /// Initialize runtime.
@@ -40,16 +37,16 @@ namespace AeonMiner.Modules
 
             state = State.Check;
 
-            if ((stats == null) || UI.ResetStats())
+            if ((stats == null) || (stats.ZoneName != mineTask.MiningZone) || UI.IsResetStats())
             {
-                SetupStats();
+                stats = new Statistics(UI);
+                stats.ZoneName = mineTask.MiningZone;
+                stats.LaborStartedWith = Host.me.laborPoints;
             }
 
-
             // Events
-            Host.onLaborAmountChanged += OnLaborAmountChanged;
-            Host.onNewInvItem += OnNewInvItem;
-
+            HookEvents();
+            
             // Start tasks
             Task.Run(() => RunTimer(), token);
 
@@ -137,6 +134,11 @@ namespace AeonMiner.Modules
         
         private void Check()
         {
+            if (!InNavMesh(Host.me))
+            {
+
+            }
+
             SetState(State.Search);
         }
 
@@ -221,8 +223,6 @@ namespace AeonMiner.Modules
                     stats.UnidentifiedVeins += 1;
                 }
 
-                OnStatsUpdate();
-
 
                 if (settings.AutoLevelUp && CanUpgradeLevel(13))
                 {
@@ -242,17 +242,14 @@ namespace AeonMiner.Modules
             while (token.IsAlive())
             {
                 stats.RunTime += 1;
-                long elapse = TimeSpan.FromSeconds(stats.RunTime).Ticks;
+                stats.AvgMinedPerHour = (int)((double)stats.VeinsMined / (double)stats.RunTime * 3600);
 
-                long avgMines = (stats.VeinsMined % stats.RunTime);
-                stats.AvgMinedPerHour = avgMines;
+                // Estimate to burn labor
+                var estimate = stats.GetBurnEstimate(Host.me.laborPoints);
+                var esDateTime = new DateTime(estimate.Ticks);
 
-                
-                Utils.InvokeOn(UI, () =>
-                {
-                    UI.lbl_RunTime.Text = new DateTime(elapse).ToString("HH:mm:ss");
-                    UI.lbl_AvgMinedPerHour.Text = avgMines.ToString();
-                });
+                UI.UpdateLabel(UI.lbl_EstimatingTime, esDateTime.ToString("HH:mm:ss"));
+
 
                 Utils.Delay(1000, token);
             }
@@ -332,6 +329,11 @@ namespace AeonMiner.Modules
             CancelBoosts();
         }
 
+
+        private bool ComeInsideMesh()
+        {
+            
+        }
 
         private bool TryPatrolToPoint()
         {
@@ -466,29 +468,11 @@ namespace AeonMiner.Modules
         }
 
 
-        private void SetupStats()
-        {
-            stats = new Stats();
-            stats.ZoneName = mineTask.MiningZone;
-            stats.LaborStartedWith = Host.me.laborPoints;
-
-            Utils.InvokeOn(UI, () => UI.lbl_LaborRemaining.Text = Host.me.laborPoints.ToString());
-
-
-            OnStatsUpdate();
-        }
-
-        private void OnStatsUpdate()
-        {
-            StatsUpdated?.Invoke(stats);
-        }
-
         private void OnLaborAmountChanged(int count)
         {
             stats.LaborBurned += Math.Abs(count);
-            Utils.InvokeOn(UI, () => UI.lbl_LaborRemaining.Text = Host.me.laborPoints.ToString());
 
-            OnStatsUpdate();
+            Utils.InvokeOn(UI, () => UI.lbl_LaborRemaining.Text = Host.me.laborPoints.ToString());
         }
 
         private void OnNewInvItem(Item item, int count)
@@ -496,7 +480,34 @@ namespace AeonMiner.Modules
             if (!MiningNodes.IsProduct(item.id))
                 return;
 
+            // Add item to box
             UI.AddToMined(item, count);
+        }
+
+        private void OnSkillCasting(Creature obj, SpawnObject obj2, Skill skill, double x, double y, double z)
+        {
+            if (obj.type == BotTypes.Player && obj2 == Host.me && skill.id == 20256)
+            {
+                stats.SuspectReports += 1;
+                UI.GameLog($"You have been reported by: {obj.name}");
+            }
+        }
+
+        private void OnChatMessage(ChatType chatType, string text, string sender)
+        {
+            if (chatType == ChatType.Whisper)
+            {
+                stats.WhispersReceived += 1;
+                UI.GameLog($"From {sender}: {text}");
+            }
+        }
+
+        private void OnTargetChanged(Creature obj1, Creature obj2)
+        {
+            if (obj1.type == BotTypes.Player && obj2 == Host.me)
+            {
+                UI.GameLog($"Targetted by {obj1.name}");
+            }
         }
 
         #region Helpers
@@ -549,10 +560,22 @@ namespace AeonMiner.Modules
             CancelAnyBuffs(Buffs.Dash);
         }
 
-        private void CancelEvents()
+        private void HookEvents()
+        {
+            Host.onLaborAmountChanged += OnLaborAmountChanged;
+            Host.onNewInvItem += OnNewInvItem;
+            Host.onSkillCasting += OnSkillCasting;
+            Host.onChatMessage += OnChatMessage;
+            Host.onTargetChanged += OnTargetChanged;
+        }
+        
+        private void UnhookEvents()
         {
             Host.onLaborAmountChanged -= OnLaborAmountChanged;
             Host.onNewInvItem -= OnNewInvItem;
+            Host.onSkillCasting -= OnSkillCasting;
+            Host.onChatMessage -= OnChatMessage;
+            Host.onTargetChanged -= OnTargetChanged;
         }
 
         private void SetState(State state)

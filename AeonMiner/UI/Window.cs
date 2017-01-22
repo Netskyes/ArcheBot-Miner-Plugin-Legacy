@@ -36,11 +36,12 @@ namespace AeonMiner.UI
             LoadSettings();
 
             // Register events
-            Host.BaseModule.StatsUpdated += StatsUpdated;
             #region Controls Events
+
             lbox_MiningTasks.SelectedIndexChanged += MiningTasks_SelectedIndexChanged;
             cmbox_ZonesList.SelectedIndexChanged += ZonesList_SelectedIndexChanged;
             cmbox_PortalsList.SelectedIndexChanged += PortalsList_SelectedIndexChanged;
+
             #endregion
 
             // Auto Start
@@ -53,8 +54,13 @@ namespace AeonMiner.UI
         }
 
 
-
         #region Helpers
+
+        public void GameLog(string text)
+            => Utils.InvokeOn(this, () => txtbox_GameLog.AppendText(text + Environment.NewLine));
+
+        public void UpdateLabel(Label label, string text)
+            => Utils.InvokeOn(this, () => label.Text = text);
 
         private void PopFromList(ListBox lbox)
         {
@@ -87,11 +93,6 @@ namespace AeonMiner.UI
             return true;
         }
 
-        public void UpdateRunTime(string text)
-        {
-            Utils.InvokeOn(this, () => lbl_RunTime.Text = text);
-        }
-
         public void UpdateButtonState(string text, bool state = true)
         {
             Utils.InvokeOn(btn_Start, () =>
@@ -101,10 +102,9 @@ namespace AeonMiner.UI
             });
         }
 
-        public bool ResetStats()
+        public bool IsResetStats()
         {
             bool isReset = false;
-
 
             Utils.InvokeOn(this, () =>
             {
@@ -121,22 +121,11 @@ namespace AeonMiner.UI
 
         public void AddToMined(Item item, int count)
         {
-            DataGridViewRow row = null;
+            Utils.InvokeOn(this, () =>
+            {
+                var row = dtg_Items.Rows.OfType<DataGridViewRow>().FirstOrDefault(d => (uint)d.Tag == item.id);
 
-            try
-            {
-                Utils.InvokeOn(this, () =>
-                {
-                    row = dtg_Items.Rows.OfType<DataGridViewRow>().FirstOrDefault(d => (uint)d.Tag == item.id);
-                });
-            }
-            catch
-            {
-            }
-
-            if (row != null)
-            {
-                Utils.InvokeOn(this, () =>
+                if (row != null)
                 {
                     int amount = 0;
 
@@ -149,14 +138,11 @@ namespace AeonMiner.UI
                     }
 
                     row.Cells[1].Value = (amount + count);
-                });
 
-                return;
-            }
+                    return;
+                }
 
-            
-            Utils.InvokeOn(this, () =>
-            {
+
                 int index = dtg_Items.Rows.Add(item.name, count);
 
                 try
@@ -581,18 +567,6 @@ namespace AeonMiner.UI
         #endregion
 
         #region Events
-
-        private void StatsUpdated(Stats stats)
-        {
-            Utils.InvokeOn(this, () =>
-            {
-                lbl_LaborStartedWith.Text = stats.LaborStartedWith.ToString();
-                lbl_LaborBurned.Text = stats.LaborBurned.ToString();
-                lbl_VeinsMined.Text = stats.VeinsMined.ToString();
-                lbl_FortunaVeins.Text = stats.FortunaVeins.ToString();
-                lbl_UniVeins.Text = stats.UnidentifiedVeins.ToString();
-            });
-        }
 
         private void btn_MoveTaskUp_Click(object sender, EventArgs e)
         {

@@ -45,6 +45,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,7 +59,7 @@
     <Compile Include="Data\Collections\MiningNodes.cs" />
     <Compile Include="Data\Node.cs" />
     <Compile Include="Data\Point3D.cs" />
-    <Compile Include="Data\Stats.cs" />
+    <Compile Include="Data\Statistics.cs" />
     <Compile Include="Data\Telemetry.cs" />
     <Compile Include="Handlers\NodeHandle.cs" />
     <Compile Include="Enums\MapUseType.cs" />
