@@ -30,12 +30,15 @@
         {
             this.tab_Main = new System.Windows.Forms.TabControl();
             this.tab_Mining = new System.Windows.Forms.TabPage();
+            this.label21 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.txtbox_TaskName = new System.Windows.Forms.TextBox();
             this.btn_AddMiningTask = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.tab_Options = new System.Windows.Forms.TabPage();
+            this.label28 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label_WhenDone = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -47,12 +50,18 @@
             this.label14 = new System.Windows.Forms.Label();
             this.tab_Combat = new System.Windows.Forms.TabPage();
             this.tab_Overview = new System.Windows.Forms.TabPage();
-            this.label9 = new System.Windows.Forms.Label();
-            this.btn_Start = new System.Windows.Forms.Button();
             this.chkbox_ResetStats = new System.Windows.Forms.CheckBox();
             this.label18 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.btn_Start = new System.Windows.Forms.Button();
+            this.label30 = new System.Windows.Forms.Label();
             this.container7 = new Container();
             this.chkbox_AutoLevelUp = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.chkbox_UseLaborPotion = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.num_MinLaborPoints = new System.Windows.Forms.NumericUpDown();
             this.chkbox_FightAggroMobs = new System.Windows.Forms.CheckBox();
             this.chkbox_SkipBusyNodes = new System.Windows.Forms.CheckBox();
             this.container6 = new Container();
@@ -60,16 +69,20 @@
             this.btn_MoveTaskUp = new System.Windows.Forms.Button();
             this.btn_MoveTaskDown = new System.Windows.Forms.Button();
             this.container2 = new Container();
-            this.container8 = new Container();
-            this.cmbox_PortalsList = new System.Windows.Forms.ComboBox();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.container15 = new Container();
+            this.chklbox_IgnoreVeins = new System.Windows.Forms.CheckedListBox();
+            this.num_TaskTime = new System.Windows.Forms.NumericUpDown();
+            this.chkbox_UseTaskTIme = new System.Windows.Forms.CheckBox();
             this.container5 = new Container();
             this.cmbox_ZonesList = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.container8 = new Container();
+            this.cmbox_PortalsList = new System.Windows.Forms.ComboBox();
+            this.container14 = new Container();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.label29 = new System.Windows.Forms.Label();
             this.container9 = new Container();
             this.chkbox_UseFreerunner = new System.Windows.Forms.CheckBox();
             this.chkbox_UseCometsBoon = new System.Windows.Forms.CheckBox();
@@ -91,6 +104,7 @@
             this.chkbox_BeginDailyQuest = new System.Windows.Forms.CheckBox();
             this.container1 = new Container();
             this.cmbox_MountsList = new System.Windows.Forms.ComboBox();
+            this.container16 = new Container();
             this.container11 = new Container();
             this.lbox_ItemsList = new System.Windows.Forms.ListBox();
             this.btn_GetInventoryItems = new System.Windows.Forms.Button();
@@ -134,12 +148,14 @@
             this.tab_Extra.SuspendLayout();
             this.tab_Overview.SuspendLayout();
             this.container7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_MinLaborPoints)).BeginInit();
             this.container6.SuspendLayout();
             this.container2.SuspendLayout();
-            this.container8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.container15.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_TaskTime)).BeginInit();
             this.container5.SuspendLayout();
+            this.container8.SuspendLayout();
+            this.container14.SuspendLayout();
             this.container9.SuspendLayout();
             this.container_WhenDone.SuspendLayout();
             this.container3.SuspendLayout();
@@ -168,6 +184,7 @@
             // 
             // tab_Mining
             // 
+            this.tab_Mining.Controls.Add(this.label21);
             this.tab_Mining.Controls.Add(this.label8);
             this.tab_Mining.Controls.Add(this.container7);
             this.tab_Mining.Controls.Add(this.txtbox_TaskName);
@@ -184,11 +201,21 @@
             this.tab_Mining.Text = "Mining";
             this.tab_Mining.UseVisualStyleBackColor = true;
             // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.ForeColor = System.Drawing.Color.Gray;
+            this.label21.Location = new System.Drawing.Point(441, 11);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(72, 13);
+            this.label21.TabIndex = 21;
+            this.label21.Text = "Ignore Veins";
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
             this.label8.ForeColor = System.Drawing.Color.Gray;
-            this.label8.Location = new System.Drawing.Point(187, 207);
+            this.label8.Location = new System.Drawing.Point(187, 165);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(87, 13);
             this.label8.TabIndex = 19;
@@ -232,12 +259,25 @@
             this.label3.TabIndex = 8;
             this.label3.Text = "Mining tasks";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(341, 302);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(84, 13);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Nearby district:";
+            // 
             // tab_Options
             // 
             this.tab_Options.Controls.Add(this.label11);
             this.tab_Options.Controls.Add(this.label_WhenDone);
+            this.tab_Options.Controls.Add(this.container8);
+            this.tab_Options.Controls.Add(this.label6);
+            this.tab_Options.Controls.Add(this.label28);
             this.tab_Options.Controls.Add(this.label2);
             this.tab_Options.Controls.Add(this.label1);
+            this.tab_Options.Controls.Add(this.container14);
             this.tab_Options.Controls.Add(this.container9);
             this.tab_Options.Controls.Add(this.container_WhenDone);
             this.tab_Options.Controls.Add(this.container3);
@@ -250,11 +290,21 @@
             this.tab_Options.Text = "Options";
             this.tab_Options.UseVisualStyleBackColor = true;
             // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.ForeColor = System.Drawing.Color.Gray;
+            this.label28.Location = new System.Drawing.Point(209, 11);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(46, 13);
+            this.label28.TabIndex = 38;
+            this.label28.Text = "Mailing";
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
             this.label11.ForeColor = System.Drawing.Color.Gray;
-            this.label11.Location = new System.Drawing.Point(13, 138);
+            this.label11.Location = new System.Drawing.Point(13, 137);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(99, 13);
             this.label11.TabIndex = 36;
@@ -264,7 +314,7 @@
             // 
             this.label_WhenDone.AutoSize = true;
             this.label_WhenDone.ForeColor = System.Drawing.Color.DimGray;
-            this.label_WhenDone.Location = new System.Drawing.Point(185, 12);
+            this.label_WhenDone.Location = new System.Drawing.Point(406, 11);
             this.label_WhenDone.Name = "label_WhenDone";
             this.label_WhenDone.Size = new System.Drawing.Size(68, 13);
             this.label_WhenDone.TabIndex = 34;
@@ -283,7 +333,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(402, 18);
+            this.label1.Location = new System.Drawing.Point(338, 237);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(76, 13);
             this.label1.TabIndex = 4;
@@ -291,11 +341,13 @@
             // 
             // tab_Extra
             // 
-            this.tab_Extra.Controls.Add(this.container11);
+            this.tab_Extra.Controls.Add(this.label30);
             this.tab_Extra.Controls.Add(this.label12);
             this.tab_Extra.Controls.Add(this.txtbox_ItemSearch);
             this.tab_Extra.Controls.Add(this.label13);
             this.tab_Extra.Controls.Add(this.label14);
+            this.tab_Extra.Controls.Add(this.container16);
+            this.tab_Extra.Controls.Add(this.container11);
             this.tab_Extra.Controls.Add(this.container10);
             this.tab_Extra.Location = new System.Drawing.Point(4, 22);
             this.tab_Extra.Name = "tab_Extra";
@@ -319,7 +371,7 @@
             // 
             this.txtbox_ItemSearch.Location = new System.Drawing.Point(8, 28);
             this.txtbox_ItemSearch.Name = "txtbox_ItemSearch";
-            this.txtbox_ItemSearch.Size = new System.Drawing.Size(203, 22);
+            this.txtbox_ItemSearch.Size = new System.Drawing.Size(186, 22);
             this.txtbox_ItemSearch.TabIndex = 2;
             this.txtbox_ItemSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtbox_ItemSearch_KeyDown);
             // 
@@ -354,8 +406,8 @@
             // 
             // tab_Overview
             // 
-            this.tab_Overview.Controls.Add(this.label18);
             this.tab_Overview.Controls.Add(this.chkbox_ResetStats);
+            this.tab_Overview.Controls.Add(this.label18);
             this.tab_Overview.Controls.Add(this.label9);
             this.tab_Overview.Controls.Add(this.container13);
             this.tab_Overview.Controls.Add(this.container4);
@@ -366,6 +418,27 @@
             this.tab_Overview.TabIndex = 3;
             this.tab_Overview.Text = "Overview";
             this.tab_Overview.UseVisualStyleBackColor = true;
+            // 
+            // chkbox_ResetStats
+            // 
+            this.chkbox_ResetStats.AutoSize = true;
+            this.chkbox_ResetStats.ForeColor = System.Drawing.Color.Gray;
+            this.chkbox_ResetStats.Location = new System.Drawing.Point(265, 10);
+            this.chkbox_ResetStats.Name = "chkbox_ResetStats";
+            this.chkbox_ResetStats.Size = new System.Drawing.Size(82, 17);
+            this.chkbox_ResetStats.TabIndex = 2;
+            this.chkbox_ResetStats.Text = "Reset Stats";
+            this.chkbox_ResetStats.UseVisualStyleBackColor = true;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.ForeColor = System.Drawing.Color.Gray;
+            this.label18.Location = new System.Drawing.Point(13, 250);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(60, 13);
+            this.label18.TabIndex = 11;
+            this.label18.Text = "Events log";
             // 
             // label9
             // 
@@ -380,7 +453,7 @@
             // btn_Start
             // 
             this.btn_Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Start.Location = new System.Drawing.Point(501, 12);
+            this.btn_Start.Location = new System.Drawing.Point(502, 12);
             this.btn_Start.Name = "btn_Start";
             this.btn_Start.Size = new System.Drawing.Size(89, 28);
             this.btn_Start.TabIndex = 1;
@@ -388,50 +461,103 @@
             this.btn_Start.UseVisualStyleBackColor = true;
             this.btn_Start.Click += new System.EventHandler(this.btn_Start_Click);
             // 
-            // chkbox_ResetStats
+            // label30
             // 
-            this.chkbox_ResetStats.AutoSize = true;
-            this.chkbox_ResetStats.Location = new System.Drawing.Point(264, 10);
-            this.chkbox_ResetStats.Name = "chkbox_ResetStats";
-            this.chkbox_ResetStats.Size = new System.Drawing.Size(82, 17);
-            this.chkbox_ResetStats.TabIndex = 2;
-            this.chkbox_ResetStats.Text = "Reset Stats";
-            this.chkbox_ResetStats.UseVisualStyleBackColor = true;
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.ForeColor = System.Drawing.Color.Gray;
-            this.label18.Location = new System.Drawing.Point(13, 249);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(60, 13);
-            this.label18.TabIndex = 11;
-            this.label18.Text = "Events log";
+            this.label30.AutoSize = true;
+            this.label30.ForeColor = System.Drawing.Color.Gray;
+            this.label30.Location = new System.Drawing.Point(405, 21);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(46, 13);
+            this.label30.TabIndex = 44;
+            this.label30.Text = "Mailing";
             // 
             // container7
             // 
             this.container7.Controls.Add(this.chkbox_AutoLevelUp);
+            this.container7.Controls.Add(this.checkBox2);
+            this.container7.Controls.Add(this.chkbox_UseLaborPotion);
+            this.container7.Controls.Add(this.checkBox1);
+            this.container7.Controls.Add(this.label7);
+            this.container7.Controls.Add(this.num_MinLaborPoints);
             this.container7.Controls.Add(this.chkbox_FightAggroMobs);
             this.container7.Controls.Add(this.chkbox_SkipBusyNodes);
-            this.container7.Location = new System.Drawing.Point(182, 214);
+            this.container7.Location = new System.Drawing.Point(182, 172);
             this.container7.Name = "container7";
-            this.container7.Size = new System.Drawing.Size(404, 157);
+            this.container7.Size = new System.Drawing.Size(404, 199);
             this.container7.TabIndex = 18;
             // 
             // chkbox_AutoLevelUp
             // 
             this.chkbox_AutoLevelUp.AutoSize = true;
-            this.chkbox_AutoLevelUp.Location = new System.Drawing.Point(139, 17);
+            this.chkbox_AutoLevelUp.Location = new System.Drawing.Point(263, 17);
             this.chkbox_AutoLevelUp.Name = "chkbox_AutoLevelUp";
             this.chkbox_AutoLevelUp.Size = new System.Drawing.Size(97, 17);
             this.chkbox_AutoLevelUp.TabIndex = 13;
             this.chkbox_AutoLevelUp.Text = "Auto Level Up";
             this.chkbox_AutoLevelUp.UseVisualStyleBackColor = true;
             // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(16, 72);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(94, 17);
+            this.checkBox2.TabIndex = 15;
+            this.checkBox2.Text = "Use Campfire";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // chkbox_UseLaborPotion
+            // 
+            this.chkbox_UseLaborPotion.AutoSize = true;
+            this.chkbox_UseLaborPotion.Location = new System.Drawing.Point(133, 40);
+            this.chkbox_UseLaborPotion.Name = "chkbox_UseLaborPotion";
+            this.chkbox_UseLaborPotion.Size = new System.Drawing.Size(114, 17);
+            this.chkbox_UseLaborPotion.TabIndex = 13;
+            this.chkbox_UseLaborPotion.Text = "Use Labor Potion";
+            this.chkbox_UseLaborPotion.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(16, 95);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(125, 17);
+            this.checkBox1.TabIndex = 14;
+            this.checkBox1.Text = "Use Hastener Scroll";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(234, 124);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(62, 13);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "Min. Labor";
+            // 
+            // num_MinLaborPoints
+            // 
+            this.num_MinLaborPoints.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.num_MinLaborPoints.Location = new System.Drawing.Point(302, 121);
+            this.num_MinLaborPoints.Maximum = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            this.num_MinLaborPoints.Name = "num_MinLaborPoints";
+            this.num_MinLaborPoints.Size = new System.Drawing.Size(56, 20);
+            this.num_MinLaborPoints.TabIndex = 9;
+            this.num_MinLaborPoints.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.num_MinLaborPoints.Value = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+            // 
             // chkbox_FightAggroMobs
             // 
             this.chkbox_FightAggroMobs.AutoSize = true;
-            this.chkbox_FightAggroMobs.Location = new System.Drawing.Point(248, 17);
+            this.chkbox_FightAggroMobs.Location = new System.Drawing.Point(133, 17);
             this.chkbox_FightAggroMobs.Name = "chkbox_FightAggroMobs";
             this.chkbox_FightAggroMobs.Size = new System.Drawing.Size(120, 17);
             this.chkbox_FightAggroMobs.TabIndex = 12;
@@ -493,83 +619,60 @@
             // 
             // container2
             // 
-            this.container2.Controls.Add(this.container8);
-            this.container2.Controls.Add(this.numericUpDown2);
-            this.container2.Controls.Add(this.checkBox2);
-            this.container2.Controls.Add(this.label7);
-            this.container2.Controls.Add(this.numericUpDown1);
+            this.container2.Controls.Add(this.container15);
+            this.container2.Controls.Add(this.num_TaskTime);
+            this.container2.Controls.Add(this.chkbox_UseTaskTIme);
             this.container2.Controls.Add(this.container5);
             this.container2.Controls.Add(this.label5);
-            this.container2.Controls.Add(this.label6);
             this.container2.Location = new System.Drawing.Point(182, 18);
             this.container2.Name = "container2";
-            this.container2.Size = new System.Drawing.Size(404, 184);
+            this.container2.Size = new System.Drawing.Size(404, 142);
             this.container2.TabIndex = 9;
             // 
-            // container8
+            // container15
             // 
-            this.container8.Controls.Add(this.cmbox_PortalsList);
-            this.container8.Location = new System.Drawing.Point(16, 84);
-            this.container8.Name = "container8";
-            this.container8.Size = new System.Drawing.Size(169, 27);
-            this.container8.TabIndex = 15;
+            this.container15.Controls.Add(this.chklbox_IgnoreVeins);
+            this.container15.Location = new System.Drawing.Point(254, 0);
+            this.container15.Name = "container15";
+            this.container15.Padding = new System.Windows.Forms.Padding(6);
+            this.container15.Size = new System.Drawing.Size(150, 142);
+            this.container15.TabIndex = 15;
             // 
-            // cmbox_PortalsList
+            // chklbox_IgnoreVeins
             // 
-            this.cmbox_PortalsList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbox_PortalsList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cmbox_PortalsList.FormattingEnabled = true;
-            this.cmbox_PortalsList.Location = new System.Drawing.Point(3, 3);
-            this.cmbox_PortalsList.Name = "cmbox_PortalsList";
-            this.cmbox_PortalsList.Size = new System.Drawing.Size(163, 21);
-            this.cmbox_PortalsList.TabIndex = 0;
+            this.chklbox_IgnoreVeins.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.chklbox_IgnoreVeins.FormattingEnabled = true;
+            this.chklbox_IgnoreVeins.Location = new System.Drawing.Point(9, 14);
+            this.chklbox_IgnoreVeins.Name = "chklbox_IgnoreVeins";
+            this.chklbox_IgnoreVeins.Size = new System.Drawing.Size(132, 119);
+            this.chklbox_IgnoreVeins.TabIndex = 0;
+            this.chklbox_IgnoreVeins.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chklbox_IgnoreVeins_ItemCheck);
             // 
-            // numericUpDown2
+            // num_TaskTime
             // 
-            this.numericUpDown2.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.numericUpDown2.Location = new System.Drawing.Point(297, 27);
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(56, 20);
-            this.numericUpDown2.TabIndex = 14;
-            this.numericUpDown2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDown2.Value = new decimal(new int[] {
+            this.num_TaskTime.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.num_TaskTime.Location = new System.Drawing.Point(110, 71);
+            this.num_TaskTime.Name = "num_TaskTime";
+            this.num_TaskTime.Size = new System.Drawing.Size(56, 20);
+            this.num_TaskTime.TabIndex = 14;
+            this.num_TaskTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.num_TaskTime.Value = new decimal(new int[] {
             25,
             0,
             0,
             0});
+            this.num_TaskTime.ValueChanged += new System.EventHandler(this.num_TaskTime_ValueChanged);
             // 
-            // checkBox2
+            // chkbox_UseTaskTIme
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(197, 30);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(94, 17);
-            this.checkBox2.TabIndex = 12;
-            this.checkBox2.Text = "Task time: (m)";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(213, 115);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(62, 13);
-            this.label7.TabIndex = 10;
-            this.label7.Text = "Min. Labor";
-            // 
-            // numericUpDown1
-            // 
-            this.numericUpDown1.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.numericUpDown1.Location = new System.Drawing.Point(281, 112);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(56, 20);
-            this.numericUpDown1.TabIndex = 9;
-            this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDown1.Value = new decimal(new int[] {
-            25,
-            0,
-            0,
-            0});
+            this.chkbox_UseTaskTIme.AutoSize = true;
+            this.chkbox_UseTaskTIme.Location = new System.Drawing.Point(16, 70);
+            this.chkbox_UseTaskTIme.Name = "chkbox_UseTaskTIme";
+            this.chkbox_UseTaskTIme.Size = new System.Drawing.Size(94, 17);
+            this.chkbox_UseTaskTIme.TabIndex = 12;
+            this.chkbox_UseTaskTIme.Text = "Task time: (m)";
+            this.chkbox_UseTaskTIme.UseVisualStyleBackColor = true;
+            this.chkbox_UseTaskTIme.CheckedChanged += new System.EventHandler(this.chkbox_UseTaskTime_CheckedChanged);
             // 
             // container5
             // 
@@ -598,14 +701,71 @@
             this.label5.TabIndex = 8;
             this.label5.Text = "Mining zone:";
             // 
-            // label6
+            // container8
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(13, 67);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(84, 13);
-            this.label6.TabIndex = 16;
-            this.label6.Text = "Nearby district:";
+            this.container8.Controls.Add(this.cmbox_PortalsList);
+            this.container8.Location = new System.Drawing.Point(344, 319);
+            this.container8.Name = "container8";
+            this.container8.Size = new System.Drawing.Size(169, 27);
+            this.container8.TabIndex = 15;
+            // 
+            // cmbox_PortalsList
+            // 
+            this.cmbox_PortalsList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbox_PortalsList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbox_PortalsList.FormattingEnabled = true;
+            this.cmbox_PortalsList.Location = new System.Drawing.Point(3, 3);
+            this.cmbox_PortalsList.Name = "cmbox_PortalsList";
+            this.cmbox_PortalsList.Size = new System.Drawing.Size(163, 21);
+            this.cmbox_PortalsList.TabIndex = 0;
+            // 
+            // container14
+            // 
+            this.container14.Controls.Add(this.checkBox3);
+            this.container14.Controls.Add(this.textBox1);
+            this.container14.Controls.Add(this.checkBox4);
+            this.container14.Controls.Add(this.label29);
+            this.container14.Location = new System.Drawing.Point(204, 18);
+            this.container14.Name = "container14";
+            this.container14.Size = new System.Drawing.Size(186, 189);
+            this.container14.TabIndex = 37;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(16, 17);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(70, 17);
+            this.checkBox3.TabIndex = 45;
+            this.checkBox3.Text = "Use Mail";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(16, 85);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(153, 22);
+            this.textBox1.TabIndex = 43;
+            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Location = new System.Drawing.Point(16, 40);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(107, 17);
+            this.checkBox4.TabIndex = 3;
+            this.checkBox4.Text = "Express Delivery";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(13, 68);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(58, 13);
+            this.label29.TabIndex = 44;
+            this.label29.Text = "Recipient:";
             // 
             // container9
             // 
@@ -614,9 +774,9 @@
             this.container9.Controls.Add(this.chkbox_UseQuickstep);
             this.container9.Controls.Add(this.chkbox_UseTeleportation);
             this.container9.Controls.Add(this.chkbox_UseDash);
-            this.container9.Location = new System.Drawing.Point(8, 145);
+            this.container9.Location = new System.Drawing.Point(8, 144);
             this.container9.Name = "container9";
-            this.container9.Size = new System.Drawing.Size(162, 137);
+            this.container9.Size = new System.Drawing.Size(186, 137);
             this.container9.TabIndex = 35;
             // 
             // chkbox_UseFreerunner
@@ -678,16 +838,16 @@
             this.container_WhenDone.Controls.Add(this._ToSelectionScreen);
             this.container_WhenDone.Controls.Add(this.chkbox_RunPlugin);
             this.container_WhenDone.Controls.Add(this.label_Name);
-            this.container_WhenDone.Location = new System.Drawing.Point(176, 18);
+            this.container_WhenDone.Location = new System.Drawing.Point(400, 18);
             this.container_WhenDone.Name = "container_WhenDone";
-            this.container_WhenDone.Size = new System.Drawing.Size(162, 189);
+            this.container_WhenDone.Size = new System.Drawing.Size(186, 189);
             this.container_WhenDone.TabIndex = 33;
             // 
             // label_Finally
             // 
             this.label_Finally.AutoSize = true;
             this.label_Finally.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label_Finally.Location = new System.Drawing.Point(11, 90);
+            this.label_Finally.Location = new System.Drawing.Point(14, 91);
             this.label_Finally.Name = "label_Finally";
             this.label_Finally.Size = new System.Drawing.Size(43, 13);
             this.label_Finally.TabIndex = 34;
@@ -697,7 +857,7 @@
             // 
             this._TerminateClient.AutoSize = true;
             this._TerminateClient.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this._TerminateClient.Location = new System.Drawing.Point(14, 133);
+            this._TerminateClient.Location = new System.Drawing.Point(17, 134);
             this._TerminateClient.Name = "_TerminateClient";
             this._TerminateClient.Size = new System.Drawing.Size(108, 17);
             this._TerminateClient.TabIndex = 24;
@@ -707,9 +867,9 @@
             // txtbox_PluginRunName
             // 
             this.txtbox_PluginRunName.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.txtbox_PluginRunName.Location = new System.Drawing.Point(14, 57);
+            this.txtbox_PluginRunName.Location = new System.Drawing.Point(17, 60);
             this.txtbox_PluginRunName.Name = "txtbox_PluginRunName";
-            this.txtbox_PluginRunName.Size = new System.Drawing.Size(134, 22);
+            this.txtbox_PluginRunName.Size = new System.Drawing.Size(149, 22);
             this.txtbox_PluginRunName.TabIndex = 20;
             this.txtbox_PluginRunName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -718,7 +878,7 @@
             this._Nothing.AutoSize = true;
             this._Nothing.Checked = true;
             this._Nothing.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this._Nothing.Location = new System.Drawing.Point(14, 110);
+            this._Nothing.Location = new System.Drawing.Point(17, 111);
             this._Nothing.Name = "_Nothing";
             this._Nothing.Size = new System.Drawing.Size(68, 17);
             this._Nothing.TabIndex = 22;
@@ -730,7 +890,7 @@
             // 
             this._ToSelectionScreen.AutoSize = true;
             this._ToSelectionScreen.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this._ToSelectionScreen.Location = new System.Drawing.Point(14, 156);
+            this._ToSelectionScreen.Location = new System.Drawing.Point(17, 157);
             this._ToSelectionScreen.Name = "_ToSelectionScreen";
             this._ToSelectionScreen.Size = new System.Drawing.Size(124, 17);
             this._ToSelectionScreen.TabIndex = 23;
@@ -741,7 +901,7 @@
             // 
             this.chkbox_RunPlugin.AutoSize = true;
             this.chkbox_RunPlugin.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.chkbox_RunPlugin.Location = new System.Drawing.Point(14, 16);
+            this.chkbox_RunPlugin.Location = new System.Drawing.Point(17, 17);
             this.chkbox_RunPlugin.Name = "chkbox_RunPlugin";
             this.chkbox_RunPlugin.Size = new System.Drawing.Size(83, 17);
             this.chkbox_RunPlugin.TabIndex = 19;
@@ -752,7 +912,7 @@
             // 
             this.label_Name.AutoSize = true;
             this.label_Name.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label_Name.Location = new System.Drawing.Point(11, 40);
+            this.label_Name.Location = new System.Drawing.Point(14, 43);
             this.label_Name.Name = "label_Name";
             this.label_Name.Size = new System.Drawing.Size(39, 13);
             this.label_Name.TabIndex = 18;
@@ -766,7 +926,7 @@
             this.container3.Controls.Add(this.chkbox_BeginDailyQuest);
             this.container3.Location = new System.Drawing.Point(8, 18);
             this.container3.Name = "container3";
-            this.container3.Size = new System.Drawing.Size(162, 115);
+            this.container3.Size = new System.Drawing.Size(186, 114);
             this.container3.TabIndex = 5;
             // 
             // chkbox_RemoveSuspect
@@ -812,7 +972,7 @@
             // container1
             // 
             this.container1.Controls.Add(this.cmbox_MountsList);
-            this.container1.Location = new System.Drawing.Point(405, 35);
+            this.container1.Location = new System.Drawing.Point(341, 254);
             this.container1.Name = "container1";
             this.container1.Size = new System.Drawing.Size(169, 27);
             this.container1.TabIndex = 3;
@@ -827,6 +987,13 @@
             this.cmbox_MountsList.Size = new System.Drawing.Size(163, 21);
             this.cmbox_MountsList.TabIndex = 0;
             // 
+            // container16
+            // 
+            this.container16.Location = new System.Drawing.Point(400, 28);
+            this.container16.Name = "container16";
+            this.container16.Size = new System.Drawing.Size(186, 163);
+            this.container16.TabIndex = 43;
+            // 
             // container11
             // 
             this.container11.Controls.Add(this.lbox_ItemsList);
@@ -834,7 +1001,7 @@
             this.container11.Location = new System.Drawing.Point(8, 56);
             this.container11.Name = "container11";
             this.container11.Padding = new System.Windows.Forms.Padding(3);
-            this.container11.Size = new System.Drawing.Size(203, 135);
+            this.container11.Size = new System.Drawing.Size(186, 135);
             this.container11.TabIndex = 41;
             // 
             // lbox_ItemsList
@@ -843,13 +1010,13 @@
             this.lbox_ItemsList.FormattingEnabled = true;
             this.lbox_ItemsList.Location = new System.Drawing.Point(6, 6);
             this.lbox_ItemsList.Name = "lbox_ItemsList";
-            this.lbox_ItemsList.Size = new System.Drawing.Size(191, 91);
+            this.lbox_ItemsList.Size = new System.Drawing.Size(174, 91);
             this.lbox_ItemsList.TabIndex = 0;
             // 
             // btn_GetInventoryItems
             // 
             this.btn_GetInventoryItems.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_GetInventoryItems.Location = new System.Drawing.Point(110, 103);
+            this.btn_GetInventoryItems.Location = new System.Drawing.Point(93, 104);
             this.btn_GetInventoryItems.Name = "btn_GetInventoryItems";
             this.btn_GetInventoryItems.Size = new System.Drawing.Size(87, 25);
             this.btn_GetInventoryItems.TabIndex = 41;
@@ -864,13 +1031,13 @@
             this.container10.Location = new System.Drawing.Point(8, 203);
             this.container10.Name = "container10";
             this.container10.Padding = new System.Windows.Forms.Padding(3);
-            this.container10.Size = new System.Drawing.Size(203, 159);
+            this.container10.Size = new System.Drawing.Size(186, 159);
             this.container10.TabIndex = 39;
             // 
             // btn_AddToCleanItems
             // 
             this.btn_AddToCleanItems.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_AddToCleanItems.Location = new System.Drawing.Point(134, 127);
+            this.btn_AddToCleanItems.Location = new System.Drawing.Point(117, 128);
             this.btn_AddToCleanItems.Name = "btn_AddToCleanItems";
             this.btn_AddToCleanItems.Size = new System.Drawing.Size(63, 25);
             this.btn_AddToCleanItems.TabIndex = 42;
@@ -884,7 +1051,7 @@
             this.lbox_CleanItems.FormattingEnabled = true;
             this.lbox_CleanItems.Location = new System.Drawing.Point(6, 17);
             this.lbox_CleanItems.Name = "lbox_CleanItems";
-            this.lbox_CleanItems.Size = new System.Drawing.Size(191, 104);
+            this.lbox_CleanItems.Size = new System.Drawing.Size(174, 104);
             this.lbox_CleanItems.TabIndex = 1;
             this.lbox_CleanItems.DoubleClick += new System.EventHandler(this.lbox_CleanItems_DoubleClick);
             // 
@@ -1234,6 +1401,7 @@
             this.Controls.Add(this.btn_Start);
             this.Controls.Add(this.tab_Main);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Window";
             this.ShowIcon = false;
@@ -1250,13 +1418,16 @@
             this.tab_Overview.PerformLayout();
             this.container7.ResumeLayout(false);
             this.container7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_MinLaborPoints)).EndInit();
             this.container6.ResumeLayout(false);
             this.container2.ResumeLayout(false);
             this.container2.PerformLayout();
-            this.container8.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.container15.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.num_TaskTime)).EndInit();
             this.container5.ResumeLayout(false);
+            this.container8.ResumeLayout(false);
+            this.container14.ResumeLayout(false);
+            this.container14.PerformLayout();
             this.container9.ResumeLayout(false);
             this.container9.PerformLayout();
             this.container_WhenDone.ResumeLayout(false);
@@ -1300,7 +1471,7 @@
         private System.Windows.Forms.Button btn_MoveTaskUp;
         private System.Windows.Forms.Button btn_MoveTaskDown;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown num_MinLaborPoints;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TabPage tab_Extra;
         private System.Windows.Forms.Label label_WhenDone;
@@ -1321,8 +1492,8 @@
         private System.Windows.Forms.CheckBox chkbox_AutoLevelUp;
         private System.Windows.Forms.CheckBox chkbox_BeginDailyQuest;
         private System.Windows.Forms.CheckBox chkbox_FinishDailyQuest;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.CheckBox chkbox_UseTaskTIme;
+        private System.Windows.Forms.NumericUpDown num_TaskTime;
         private System.Windows.Forms.Label label6;
         private Container container8;
         private System.Windows.Forms.ComboBox cmbox_PortalsList;
@@ -1378,5 +1549,19 @@
         private System.Windows.Forms.Label label18;
         public System.Windows.Forms.Label lbl_EstimatingTime;
         private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.CheckBox chkbox_UseLaborPotion;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Label label28;
+        private Container container14;
+        private System.Windows.Forms.CheckBox checkBox4;
+        private Container container15;
+        private System.Windows.Forms.CheckedListBox chklbox_IgnoreVeins;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.Label label30;
+        private Container container16;
     }
 }

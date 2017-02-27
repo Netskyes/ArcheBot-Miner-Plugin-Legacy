@@ -69,7 +69,7 @@ namespace AeonMiner.Utility
 
         public static T ToJsonObject<T>(string json)
         {
-            return (T)JsonConvert.DeserializeObject(json);
+            return JsonConvert.DeserializeObject<T>(json);
         }
 
         public static bool ToJsonString(object obj, string path)

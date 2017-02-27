@@ -7,6 +7,8 @@ namespace AeonMiner.Preferences
     [Serializable]
     public class Settings
     {
+        public int MinLaborPoints = 25;
+
         public bool AutoStart;
         public bool RunPlugin;
         public bool SkipBusyNodes;
@@ -26,6 +28,7 @@ namespace AeonMiner.Preferences
         public string FinalAction = string.Empty;
         public string PluginRunName = string.Empty;
 
+        
         [XmlArrayItem("Name")]
         public List<string> CleanItems;
 

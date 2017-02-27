@@ -52,9 +52,19 @@ namespace AeonMiner.Data
             return nodes.FirstOrDefault(n => n.Id == id);
         }
 
+        public static Node GetByName(string name)
+        {
+            return nodes.FirstOrDefault(n => n.Name == name);
+        }
+
         public static uint[] GetPhasesById(int id)
         {
             return GetById(id).Phases;
+        }
+
+        public static uint[] GetPhasesByName(string name)
+        {
+            return GetByName(name).Phases;
         }
 
         public static bool Exists(uint phaseId)

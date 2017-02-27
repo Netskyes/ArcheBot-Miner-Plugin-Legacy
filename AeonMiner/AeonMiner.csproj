@@ -11,6 +11,7 @@
     <AssemblyName>AeonMiner</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,7 +60,7 @@
     <Compile Include="Data\Collections\MiningNodes.cs" />
     <Compile Include="Data\Node.cs" />
     <Compile Include="Data\Point3D.cs" />
-    <Compile Include="Data\Statistics.cs" />
+    <Compile Include="Data\MiningStats.cs" />
     <Compile Include="Data\Telemetry.cs" />
     <Compile Include="Handlers\NodeHandle.cs" />
     <Compile Include="Enums\MapUseType.cs" />
@@ -129,8 +130,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "C:\Users\SumYungHo\Desktop\ArcheBot\Plugins\$(ProjectName)_T\"
-copy /Y "$(TargetDir)$(TargetName).pdb" "C:\Users\SumYungHo\Desktop\ArcheBot\Plugins\$(ProjectName)_T\</PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "C:\Users\SumYungHo\Desktop\ArcheBot\Plugins\$(ProjectName)_Local\"
+copy /Y "$(TargetDir)$(TargetName).pdb" "C:\Users\SumYungHo\Desktop\ArcheBot\Plugins\$(ProjectName)_Local\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

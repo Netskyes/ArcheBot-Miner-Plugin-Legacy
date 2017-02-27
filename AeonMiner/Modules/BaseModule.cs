@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ using System.Threading.Tasks;
 namespace AeonMiner.Modules
 {
     using UI;
+    using Enums;
+    using Handlers;
     using Preferences;
 
     public sealed partial class BaseModule
@@ -30,7 +33,6 @@ namespace AeonMiner.Modules
         private CancellationToken token;
 
         // Preferences
-        private MineTask mineTask { get; set; }
         private Settings settings { get; set; }
 
         // Modules
@@ -38,12 +40,11 @@ namespace AeonMiner.Modules
         private CombatModule combat { get; set; }
         private MiningModule mining { get; set; }
 
-        
-        private bool Setup()
+
+        private bool StartUp()
         {
             // Fetch preferences
-            mineTask = UI.GetTask();
-            settings = UI.SaveSettings() ?? UI.GetSettings();
+            settings = UI.SaveSettings();
 
             // Initialize modules
             gps = new GpsModule(Host);
@@ -54,9 +55,7 @@ namespace AeonMiner.Modules
             return Initialize();
         }
 
-        private void BeginLoop() => loopTask = Task.Run(() => Loop(), token);
-
-
+        
         public async void Start()
         {
             // Generate token
@@ -67,7 +66,7 @@ namespace AeonMiner.Modules
             UI.UpdateButtonState("Loading...", false);
 
 
-            bool result = await Task.Run(() => Setup(), token);
+            bool result = await Task.Run(() => StartUp(), token);
 
             if (result)
             {
@@ -95,6 +94,36 @@ namespace AeonMiner.Modules
         }
 
 
+        private void BeginLoop() => (loopTask) = Task.Run(() => Loop(), token);
+
+        private void Loop()
+        {
+            while (token.IsAlive())
+            {
+                try
+                {
+                    Execute();
+                }
+                catch (StopException e)
+                {
+                    Host.Log(e.Message);
+                    Task.Run(() => HandleStopRequest());
+
+                    return;
+                }
+                catch (Exception e)
+                {
+                    LogException(e);
+
+                    // Default state
+                    SetState(State.Check);
+                }
+
+
+                Utils.Delay(50, token);
+            }
+        }
+
         public void CancelActions()
         {
             ts.Cancel();
@@ -114,6 +143,27 @@ namespace AeonMiner.Modules
             while (loopTask.Status == TaskStatus.Running)
             {
                 Utils.Sleep(10);
+            }
+        }
+
+        private void LogException(Exception e)
+        {
+            // Skip logging common exceptions
+            if (e.GetType() == typeof(AggregateException))
+                return;
+
+
+            string exLog = $"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}]: ";
+            exLog += $"Message: {e.Message}{Environment.NewLine}";
+            exLog += $"StackTrace: {e.StackTrace}{Environment.NewLine}";
+            exLog += $"----{Environment.NewLine}";
+
+            try
+            {
+                File.AppendAllText(Paths.Logs + $"{Host.me.name}@{Host.serverName()}.log", exLog);
+            }
+            catch
+            {
             }
         }
     }

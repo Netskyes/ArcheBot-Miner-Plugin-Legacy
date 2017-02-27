@@ -33,7 +33,12 @@ namespace AeonMiner
 
         public bool InCombat()
         {
-            return Host.getAggroMobsCount() > 0 || Host.me.inFight;
+            return Host.getAggroMobsCount() > 0;
+        }
+
+        public bool InFight()
+        {
+            return Host.me.inFight;
         }
 
         public bool CanUpgradeLevel(uint profId)
@@ -152,8 +157,7 @@ namespace AeonMiner
 
         public bool TurnToCoords(double x, double y)
         {
-            int angle = Host.angle(Host.me, x, y);
-            return Host.Turn(-(angle / 180 * Math.PI), true);
+            return Host.Turn(-AngleToRadians(Host.angle(Host.me, x, y)));
         }
 
         public bool IsCoordsBehind(double x, double y)

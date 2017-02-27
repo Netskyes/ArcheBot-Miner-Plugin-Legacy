@@ -24,6 +24,7 @@ namespace AeonMiner
         /// Loads plugin into main app domain.
         /// </summary>
         public static bool isReleaseVersion = true;
+        public static int storePluginId = 1;
 #endif
         public UIContext UIContext { get; private set; }
         public BaseModule BaseModule { get; private set; }

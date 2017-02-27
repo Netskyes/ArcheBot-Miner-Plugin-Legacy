@@ -38,7 +38,7 @@ namespace AeonMiner.Modules
         private bool isMovingToNode;
 
         private List<int> skipNodes = new List<int>();
-        private List<int> ignoreNodes = new List<int>();
+        private List<int> ignoreNodes = new List<int>(); 
         private List<uint> ignorePhases = new List<uint>();
 
         
@@ -46,15 +46,18 @@ namespace AeonMiner.Modules
         {
             if (GetProfLevel(13) < 230000)
             {
-                foreach (var phase in MiningNodes.Veins.Unidentified)
-                {
-                    ignorePhases.Add(phase);
-                }
+                AddIgnorePhases(MiningNodes.Veins.Unidentified);
             }
         }
 
         public NodeHandle GetNode()
         {
+            if (node != null)
+            {
+                prevHash = node.GetHashCode();
+            }
+
+
             node = FindNode();
 
             return (node != null && node.Exists()) ? node : null;
@@ -63,7 +66,9 @@ namespace AeonMiner.Modules
         public bool IsNodeCheck()
         {
             if (node == null || !node.Exists())
+            {
                 return false;
+            }
 
 
             if (settings.SkipBusyNodes)
@@ -71,13 +76,13 @@ namespace AeonMiner.Modules
                 if (node.IsBusy())
                 {
                     Log("Node busy, skipping...");
-                    skipNodes.Add(node.GetHashCode());
+                    SkipNode();
 
                     return false;
                 }
                 else
                 {
-                    skipNodes.Clear();
+                    ClearSkipNodes();
                 }
             }
             
@@ -87,7 +92,7 @@ namespace AeonMiner.Modules
 
             if (!InNavMesh(node.Get()) && distPoint > 8)
             {
-                ignoreNodes.Add(node.GetHashCode());
+                IgnoreNode();
 
                 return false;
             }
@@ -98,7 +103,7 @@ namespace AeonMiner.Modules
 
         public bool MineVein()
         {
-            while (!node.CanMine())
+            while (!node.CanMine() || Host.me.isGlobalCooldown)
             {
                 if (!node.Exists() || !token.IsAlive())
                     return false;
@@ -158,7 +163,7 @@ namespace AeonMiner.Modules
 
         public bool MoveToNode()
         {
-            if (Host.dist(node.Get()) < 2)
+            if (Host.dist(node.Get()) < 1.5)
                 return true;
 
 
@@ -167,7 +172,7 @@ namespace AeonMiner.Modules
             Task.Run(() => MovingWatch(), token);
             
 
-            bool isComeTo = Host.ComeTo(node.X, node.Y, node.Z, Utils.RandomDouble(0.8, 1.2));
+            bool isComeTo = Host.ComeTo(node.X, node.Y, node.Z, Utils.RandomDouble(0.6, 1.2));
             isMovingToNode = false;
 
             return isComeTo;
@@ -185,15 +190,13 @@ namespace AeonMiner.Modules
 
                     if (isCancel)
                     {
-                        Log("Cancelling move: 1");
                         Host.CancelMoveTo();
                         break;
                     }
 
                     if (settings.SkipBusyNodes && node.IsBusy())
                     {
-                        Log("Cancelling move: 2");
-                        skipNodes.Add(node.GetHashCode());
+                        SkipNode();
 
                         Host.CancelMoveTo();
                         break;
@@ -209,27 +212,19 @@ namespace AeonMiner.Modules
         }
 
 
-        private NodeHandle FindNode()
+        public NodeHandle FindNode()
         {
-            if (node != null)
-            {
-                prevHash = node.GetHashCode();
-            }
-
-
-            node = null;
-
             var nodes = Host.getDoodads().Where(d => MiningNodes.Exists(d.phaseId)
 
                 && !ignorePhases.Contains(d.phaseId)
-                && !skipNodes.Contains(d.GetHashCode()) 
+                && !skipNodes.Contains(d.GetHashCode())
                 && !ignoreNodes.Contains(d.GetHashCode())
-                && GetNavDist(d) <= 200);
+                && GetNavDist(d) <= 200
+                && d != Host.me.castObject);
 
+            int count = 0;
 
-            int count = nodes.Count();
-
-            if (count < 1)
+            if ((count = nodes.Count()) < 1)
                 return null;
 
 
@@ -247,5 +242,32 @@ namespace AeonMiner.Modules
 
             return (new NodeHandle(temp, Host));
         }
+
+
+        public void SkipNode()
+        {
+            if (node != null)
+            {
+                skipNodes.Add(node.GetHashCode());
+            }
+        }
+
+        public void IgnoreNode()
+        {
+            if (node != null)
+            {
+                ignoreNodes.Add(node.GetHashCode());
+            }
+        }
+
+        public void AddIgnorePhases(uint[] phases)
+        {
+            foreach (var phase in phases) ignorePhases.Add(phase);
+        }
+
+
+        public void ClearSkipNodes() => skipNodes.Clear();
+        public void ClearIgnoreNodes() => ignoreNodes.Clear();
+        public void ClearIgnorePhases() => ignorePhases.Clear();
     }
 }

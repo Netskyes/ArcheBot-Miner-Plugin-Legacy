@@ -30,6 +30,7 @@ namespace AeonMiner.UI
             GetMounts();
             GetMiningZones();
             GetPortals();
+            GetMiningNodes();
 
             // Loads prefs
             LoadTasks();
@@ -102,7 +103,7 @@ namespace AeonMiner.UI
             });
         }
 
-        public bool IsResetStats()
+        public bool ResetStats()
         {
             bool isReset = false;
 
@@ -164,10 +165,20 @@ namespace AeonMiner.UI
             get { return btnSwitch; } set { btnSwitch = value; }
         }
 
+        public Dictionary<string, MineTask> MiningTasks
+        {
+            get
+            {
+                lock (miningTasksLock) { return miningTasks; }
+            }
+        }
+
         private bool btnSwitch;
         private bool isLoadingTask;
         private Task queryTask;
+
         private Dictionary<string, MineTask> miningTasks = new Dictionary<string, MineTask>();
+        private readonly object miningTasksLock = new object();
 
         #endregion
 
@@ -244,6 +255,7 @@ namespace AeonMiner.UI
 
                 txtbox_PluginRunName.Text = settings.PluginRunName;
                 lbox_CleanItems.Items.AddRange(settings.CleanItems.ToArray());
+                num_MinLaborPoints.Value = settings.MinLaborPoints;
             });
         }
 
@@ -271,6 +283,7 @@ namespace AeonMiner.UI
                 settings.FinalAction = container_WhenDone.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked).Name;
                 settings.PluginRunName = txtbox_PluginRunName.Text;
                 settings.CleanItems = lbox_CleanItems.Items.OfType<string>().ToList();
+                settings.MinLaborPoints = (int)num_MinLaborPoints.Value;
             });
 
             return settings;
@@ -293,6 +306,24 @@ namespace AeonMiner.UI
                 Utils.InvokeOn(this, () => lbox_MiningTasks.Items.Add(task.Name));
             }
         }
+
+        public void SaveTasks()
+        {
+            List<string> names = new List<string>();
+
+            Utils.InvokeOn(this, () => names = lbox_MiningTasks.Items.OfType<string>().ToList());
+
+
+            var mining = new MiningTasks();
+
+            mining.Tasks = miningTasks.Select
+                (t => t.Value).OrderBy
+                (t => names.IndexOf(t.Name)).ToList();
+
+            Serializer.Save(mining, $"{Paths.Settings}Tasks.xml");
+        }
+
+
 
         private void LoadTask(string name)
         {
@@ -327,38 +358,21 @@ namespace AeonMiner.UI
                     }
                 }
 
-                if (mineTask.NearbyDistrict != string.Empty)
+                foreach (var item in chklbox_IgnoreVeins.Items.OfType<string>().ToArray())
                 {
-                    int index = cmbox_PortalsList.Items.IndexOf(mineTask.NearbyDistrict);
+                    int index = chklbox_IgnoreVeins.Items.IndexOf(item);
 
-                    if (index != -1)
-                    {
-                        cmbox_PortalsList.SelectedIndex = index;
-                    }
+                    chklbox_IgnoreVeins.SetItemChecked(index, (mineTask.IgnoreVeins.Contains(item)));
                 }
 
+                num_TaskTime.Value = mineTask.TaskTime;
+                chkbox_UseTaskTIme.Checked = mineTask.UseTaskTime;
 
                 // ...
             });
 
             // Unlock events
             isLoadingTask = false;
-        }
-
-        public void SaveTasks()
-        {
-            List<string> names = new List<string>();
-
-            Utils.InvokeOn(this, () => names = lbox_MiningTasks.Items.OfType<string>().ToList());
-
-
-            var mining = new MiningTasks();
-
-            mining.Tasks = miningTasks.Select
-                (t => t.Value).OrderBy
-                (t => names.IndexOf(t.Name)).ToList();
-
-            Serializer.Save(mining, $"{Paths.Settings}Tasks.xml");
         }
 
         public MineTask GetTask()
@@ -369,7 +383,9 @@ namespace AeonMiner.UI
             {
                 task.Name = lbox_MiningTasks.GetItemText(lbox_MiningTasks.SelectedItem);
                 task.MiningZone = cmbox_ZonesList.GetItemText(cmbox_ZonesList.SelectedItem);
-                task.NearbyDistrict = cmbox_PortalsList.GetItemText(cmbox_PortalsList.SelectedItem);
+                task.IgnoreVeins = chklbox_IgnoreVeins.CheckedItems.OfType<string>().ToList();
+                task.TaskTime = (int)num_TaskTime.Value;
+                task.UseTaskTime = chkbox_UseTaskTIme.Checked;
             });
 
             return task;
@@ -475,7 +491,8 @@ namespace AeonMiner.UI
 
         private void GetInventoryItems(string match = "")
         {
-            var items = Host.getAllInvItems().Select(i => i.name).Distinct();
+            var items = Host.getAllInvItems().Select(i => i.name).Where
+                (i => i != string.Empty).Distinct();
 
             if (items.Count() == 0)
                 return;
@@ -493,6 +510,19 @@ namespace AeonMiner.UI
             {
                 lbox_ItemsList.Items.Clear();
                 lbox_ItemsList.Items.AddRange(items.ToArray());
+            });
+        }
+
+        private void GetMiningNodes()
+        {
+            var nodes = MiningNodes.GetAll();
+
+            Utils.InvokeOn(this, () =>
+            {
+                foreach (var node in nodes)
+                {
+                    chklbox_IgnoreVeins.Items.Add(node.Name);
+                }
             });
         }
 
@@ -523,16 +553,19 @@ namespace AeonMiner.UI
                 return;
 
 
-            if (miningTasks.ContainsKey(name))
+            lock (miningTasksLock)
             {
-                MessageBox.Show("Task with that name already exists!");
-                return;
+                if (miningTasks.ContainsKey(name))
+                {
+                    MessageBox.Show("Task with that name already exists!");
+                    return;
+                }
+
+                // Add task
+                miningTasks.Add(name, new MineTask() { Name = name });
+
+                SaveTasks();
             }
-
-            // Add task
-            miningTasks.Add(name, new MineTask() { Name = name });
-
-            SaveTasks();
 
 
             Utils.InvokeOn(this, () =>
@@ -593,15 +626,18 @@ namespace AeonMiner.UI
                 if (item == null)
                     return;
 
-
                 string name = item.ToString();
 
-                // Remove key
-                if (miningTasks.ContainsKey(name))
+                
+                lock (miningTasksLock)
                 {
-                    miningTasks.Remove(name);
+                    // Remove key
+                    if (miningTasks.ContainsKey(name))
+                    {
+                        miningTasks.Remove(name);
 
-                    SaveTasks();
+                        SaveTasks();
+                    }
                 }
                 
                 // Remove item
@@ -664,7 +700,8 @@ namespace AeonMiner.UI
             PopFromList(lbox_CleanItems);
         }
 
-        // Task values changes
+        #region Task Value Changes
+
         private void ZonesList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!isLoadingTask) SaveTask();
@@ -674,6 +711,26 @@ namespace AeonMiner.UI
         {
             if (!isLoadingTask) SaveTask();
         }
+
+        private void num_TaskTime_ValueChanged(object sender, EventArgs e)
+        {
+            if (!isLoadingTask) SaveTask();
+        }
+
+        private void chkbox_UseTaskTime_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!isLoadingTask) SaveTask();
+        }
+
+        private void chklbox_IgnoreVeins_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (!isLoadingTask)
+            {
+                BeginInvoke(new Action(() => SaveTask()));
+            }
+        }
+
+        #endregion
 
         #endregion
     }

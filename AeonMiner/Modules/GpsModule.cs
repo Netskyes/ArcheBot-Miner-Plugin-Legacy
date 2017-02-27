@@ -43,12 +43,12 @@ namespace AeonMiner.Modules
             {
                 case MapUseType.Local:
                     success = LoadDataBase(zoneMap.GetMapPath());
-                    Host.LoadNavMesh(zoneMap.GetMeshPath());
+                    Host.LoadNavMesh(zoneMap.GetMeshPath(), false);
                     break;
 
                 case MapUseType.Internal:
                     success = LoadDataBase(zoneMap.GetByteMap());
-                    Host.LoadNavMesh(zoneMap.GetByteMesh());
+                    Host.LoadNavMesh(zoneMap.GetByteMesh(), false);
                     break;
             }
 
@@ -68,6 +68,12 @@ namespace AeonMiner.Modules
             {
                 Host.forceNavMeshMovements = value;
             }
+        }
+
+
+        public List<GpsPoint> GetPointsByName(string match)
+        {
+            return GetAllGpsPoints().Where(p => p.name.ToLower().Contains(match.ToLower())).ToList();
         }
     }
 }
