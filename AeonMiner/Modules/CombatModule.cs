@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AeonMiner.Modules
 {
-    using Preferences;
+    using Configs;
 
     internal class CombatModule
     {

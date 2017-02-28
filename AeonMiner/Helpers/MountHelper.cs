@@ -1,15 +1,15 @@
 ﻿using ArcheBot.Bot.Classes;
 
-namespace AeonMiner.Handlers
+namespace AeonMiner.Helpers
 {
     using Data;
 
-    public class MountHandler
+    public class MountHelper
     {
         private Host Host { get; set; }
         private Mount slave;
 
-        public MountHandler(string name, Host host)
+        public MountHelper(string name, Host host)
         {
             Host = host;
             slave = Mounts.GetByName(name);

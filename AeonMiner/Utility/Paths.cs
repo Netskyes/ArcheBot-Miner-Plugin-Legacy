@@ -5,8 +5,6 @@ namespace AeonMiner
 {
     public static class Paths
     {
-        private static string[] structure = { "Zones", @"Zones\Meshes", "Logs", "Settings" };
-
         public static string[] GetStructure
         {
             get { return structure; }
@@ -42,9 +40,7 @@ namespace AeonMiner
             get { return Path.Combine(PluginPath, @"Settings\"); }
         }
 
-        public static string PackageFile
-        {
-            get { return PluginPath + "package.json";  }
-        }
+
+        private static string[] structure = { "Zones", @"Zones\Meshes", "Logs", "Settings" };
     }
 }

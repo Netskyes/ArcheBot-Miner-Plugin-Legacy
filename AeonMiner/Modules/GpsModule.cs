@@ -8,7 +8,7 @@ using ArcheBot.Bot.Classes;
 namespace AeonMiner.Modules
 {
     using Enums;
-    using Navigation;
+    using Helpers;
 
     internal class GpsModule : Gps
     {
@@ -20,9 +20,9 @@ namespace AeonMiner.Modules
         }
 
 
-        public bool Load(string zoneName)
+        public bool Load(string mapName)
         {
-            var zoneMap = Maps.GetMap(zoneName);
+            var zoneMap = MapsHelper.GetMap(mapName);
 
             if (zoneMap == null)
             {

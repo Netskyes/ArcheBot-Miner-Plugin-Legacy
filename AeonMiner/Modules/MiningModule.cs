@@ -11,10 +11,10 @@ using System.Diagnostics;
 namespace AeonMiner.Modules
 {
     using Data;
-    using Handlers;
-    using Preferences;
+    using Helpers;
+    using Configs;
 
-    internal class MiningModule : Helpers
+    internal class MiningModule : CoreHelper
     {
         private Host Host { get; set; }
         private Settings settings;
@@ -31,7 +31,7 @@ namespace AeonMiner.Modules
             Initialize();
         }
 
-        private NodeHandle node;
+        private NodeHelper node;
         private int prevHash { get; set; }
 
         private bool isMiningNode;
@@ -50,7 +50,7 @@ namespace AeonMiner.Modules
             }
         }
 
-        public NodeHandle GetNode()
+        public NodeHelper GetNode()
         {
             if (node != null)
             {
@@ -212,7 +212,7 @@ namespace AeonMiner.Modules
         }
 
 
-        public NodeHandle FindNode()
+        public NodeHelper FindNode()
         {
             var nodes = Host.getDoodads().Where(d => MiningNodes.Exists(d.phaseId)
 
@@ -240,7 +240,7 @@ namespace AeonMiner.Modules
             }
 
 
-            return (new NodeHandle(temp, Host));
+            return (new NodeHelper(temp, Host));
         }
 
 

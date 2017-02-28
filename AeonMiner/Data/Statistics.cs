@@ -7,11 +7,11 @@ namespace AeonMiner.Data
     using UI;
 
     [Serializable]
-    public sealed class MiningStats
+    public sealed class Statistics
     {
         private Window UI;
         
-        public MiningStats(Window ui)
+        public Statistics(Window ui)
         {
             UI = ui;
             DateTime = DateTime.Now;

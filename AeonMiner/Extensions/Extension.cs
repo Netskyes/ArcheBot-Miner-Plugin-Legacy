@@ -2,7 +2,7 @@
 
 namespace AeonMiner
 {
-    public static class Extensions
+    public static class Extension
     {
         public static bool IsAlive(this CancellationToken token)
         {

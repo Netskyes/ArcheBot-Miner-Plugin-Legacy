@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace AeonMiner.Preferences
+namespace AeonMiner.Configs
 {
     [Serializable]
     public class Settings

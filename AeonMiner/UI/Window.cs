@@ -10,8 +10,8 @@ namespace AeonMiner.UI
 {
     using Data;
     using Utility;
-    using Preferences;
-    using Navigation;
+    using Configs;
+    using Helpers;
 
     public partial class Window : Form
     {
@@ -438,7 +438,7 @@ namespace AeonMiner.UI
 
         private void GetMiningZones()
         {
-            var zones = Maps.GetAll().Select(m => m.Name).OrderBy(m => m);
+            var zones = MapsHelper.GetAll().Select(m => m.Name).OrderBy(m => m);
 
             if (zones.Count() < 1)
                 return;

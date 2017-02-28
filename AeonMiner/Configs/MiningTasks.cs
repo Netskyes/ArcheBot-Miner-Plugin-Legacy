@@ -2,8 +2,10 @@
 using System.Xml.Serialization;
 using System.Collections.Generic;
 
-namespace AeonMiner.Preferences
+namespace AeonMiner.Configs
 {
+    using Data;
+
     [Serializable]
     public class MiningTasks
     {

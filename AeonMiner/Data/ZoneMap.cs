@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace AeonMiner.Navigation
+namespace AeonMiner.Data
 {
     using Enums;
 

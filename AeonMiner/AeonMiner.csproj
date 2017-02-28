@@ -55,34 +55,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Extensions.cs" />
+    <Compile Include="Modules\BehaviorModule.cs" />
+    <Compile Include="Extensions\Extension.cs" />
     <Compile Include="Data\Collections\Base.cs" />
     <Compile Include="Data\Collections\MiningNodes.cs" />
     <Compile Include="Data\Node.cs" />
     <Compile Include="Data\Point3D.cs" />
-    <Compile Include="Data\MiningStats.cs" />
-    <Compile Include="Data\Telemetry.cs" />
-    <Compile Include="Handlers\NodeHandle.cs" />
+    <Compile Include="Data\Statistics.cs" />
+    <Compile Include="Helpers\NodeHelper.cs" />
     <Compile Include="Enums\MapUseType.cs" />
     <Compile Include="Enums\State.cs" />
-    <Compile Include="Classes\Helpers.cs" />
-    <Compile Include="Handlers\MountHandler.cs" />
+    <Compile Include="Helpers\CoreHelper.cs" />
+    <Compile Include="Helpers\MountHelper.cs" />
     <Compile Include="Modules\CombatModule.cs" />
     <Compile Include="Modules\Execution.cs" />
     <Compile Include="Modules\GpsModule.cs" />
-    <Compile Include="Navigation\Maps.cs" />
+    <Compile Include="Helpers\MapsHelper.cs" />
     <Compile Include="Data\Collections\Mounts.cs" />
-    <Compile Include="Navigation\ZoneMap.cs" />
+    <Compile Include="Data\ZoneMap.cs" />
     <Compile Include="Data\Mount.cs" />
-    <Compile Include="Data\Package.cs" />
-    <Compile Include="Preferences\MineTask.cs" />
-    <Compile Include="Handlers\StopException.cs" />
+    <Compile Include="Data\MineTask.cs" />
+    <Compile Include="StopException.cs" />
     <Compile Include="Modules\MiningModule.cs" />
     <Compile Include="Modules\BaseModule.cs" />
-    <Compile Include="Paths.cs" />
+    <Compile Include="Utility\Paths.cs" />
     <Compile Include="Host.cs" />
-    <Compile Include="Preferences\Settings.cs" />
-    <Compile Include="Preferences\MiningTasks.cs" />
+    <Compile Include="Configs\Settings.cs" />
+    <Compile Include="Configs\MiningTasks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -131,7 +130,13 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "C:\Users\SumYungHo\Desktop\ArcheBot\Plugins\$(ProjectName)_Local\"
-copy /Y "$(TargetDir)$(TargetName).pdb" "C:\Users\SumYungHo\Desktop\ArcheBot\Plugins\$(ProjectName)_Local\</PostBuildEvent>
+copy /Y "$(TargetDir)$(TargetName).pdb" "C:\Users\SumYungHo\Desktop\ArcheBot\Plugins\$(ProjectName)_Local\
+
+IF $(ConfigurationName)==Release (
+    dotNET_Reactor -project "C:\Users\SumYungHo\Desktop\ArcheBot\Plugins\AeonMiner_Local\AeonMiner.nrproj" -targetfile "C:\Users\SumYungHo\Desktop\ArcheBot\Plugins\AeonMiner_Local\AeonMiner_ob.dll"
+)
+
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

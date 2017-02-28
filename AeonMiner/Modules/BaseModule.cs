@@ -10,8 +10,7 @@ namespace AeonMiner.Modules
 {
     using UI;
     using Enums;
-    using Handlers;
-    using Preferences;
+    using Configs;
 
     public sealed partial class BaseModule
     {
@@ -33,12 +32,13 @@ namespace AeonMiner.Modules
         private CancellationToken token;
 
         // Preferences
-        private Settings settings { get; set; }
+        private Settings settings;
 
         // Modules
-        private GpsModule gps { get; set; }
-        private CombatModule combat { get; set; }
-        private MiningModule mining { get; set; }
+        private GpsModule gps;
+        private CombatModule combat;
+        private MiningModule mining;
+        private BehaviorModule behavior;
 
 
         private bool StartUp()
@@ -50,6 +50,7 @@ namespace AeonMiner.Modules
             gps = new GpsModule(Host);
             mining = new MiningModule(settings, Host, gps, token);
             combat = new CombatModule(settings, Host, gps, token);
+            behavior = new BehaviorModule(settings, Host, gps, token);
 
 
             return Initialize();

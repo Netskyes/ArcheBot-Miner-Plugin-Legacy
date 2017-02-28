@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using ArcheBot.Bot.Classes;
 
-namespace AeonMiner.Handlers
+namespace AeonMiner.Helpers
 {
     using Data;
 
-    public class NodeHandle : Helpers
+    public class NodeHelper : CoreHelper
     {
         private Host Host { get; set; }
         private DoodadObject node;
 
-        public NodeHandle(DoodadObject node, Host host) : base(host)
+        public NodeHelper(DoodadObject node, Host host) : base(host)
         {
             Host = host;
             this.node = node;

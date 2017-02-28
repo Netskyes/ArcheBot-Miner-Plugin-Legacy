@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AeonMiner.Navigation
+namespace AeonMiner.Helpers
 {
+    using Data;
     using Properties;
 
-    public static class Maps
+    public static class MapsHelper
     {
         private static readonly IEnumerable<ZoneMap> maps = new List<ZoneMap>() 
         {

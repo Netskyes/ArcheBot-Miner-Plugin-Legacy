@@ -122,38 +122,5 @@ namespace AeonMiner
         private void Debug()
         {
         }
-
-
-        private Package GetPackage()
-        {
-            var pack = Serializer.FileToJsonObject<Package>(Paths.PackageFile);
-
-            if (pack == null)
-            {
-                return WritePackage();
-            }
-
-            return pack;
-        }
-
-        private Package WritePackage()
-        {
-            // Build package
-            var package = new Package();
-                package.DateTime = DateTime.Now;
-
-            Serializer.ToJsonString(package, Paths.PackageFile);
-
-            return package;
-        }
-
-        private Telemetry GetTelemetry()
-        {
-            var pack = new Telemetry();
-            pack.Name = "Test";
-            pack.DateTime = DateTime.Now;
-
-            return pack;
-        }
     }
 }

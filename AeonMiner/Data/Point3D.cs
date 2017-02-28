@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AeonMiner
+namespace AeonMiner.Data
 {
     public class Point3D
     {

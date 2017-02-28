@@ -6,11 +6,13 @@ using ArcheBot.Bot.Classes;
 
 namespace AeonMiner
 {
-    public abstract class Helpers
+    using Data;
+
+    public abstract class CoreHelper
     {
         private Host Host { get; set; }
 
-        public Helpers(Host host)
+        public CoreHelper(Host host)
         {
             Host = host;
         }
@@ -25,6 +27,9 @@ namespace AeonMiner
         {
             Host.Log(text, color);
         }
+
+
+        #region Helpers
 
         public bool IsPatron()
         {
@@ -104,7 +109,7 @@ namespace AeonMiner
             return (Host.inventoryItemsCount() == Host.maxInventoryItemsCount());
         }
 
-        public int InventoryFreeSpace()
+        public int GetInventoryFreeSpace()
         {
             return (Host.maxInventoryItemsCount() - Host.inventoryItemsCount());
         }
@@ -119,6 +124,10 @@ namespace AeonMiner
             return Host.getCompletedQuests().Any(q => q.id == questId);
         }
 
+        #endregion
+
+        #region Navigation
+
         public bool InNavMesh(SpawnObject obj) 
             => obj != null ? InNavMesh(obj.X, obj.Y, obj.Z) : false;
 
@@ -126,6 +135,62 @@ namespace AeonMiner
         {
             return Host.IsInsideNavMesh(x, y, z);
         }
+
+        public IEnumerable<Point3D> GetNavPath(double sX, double sY, double sZ, double eX, double eY, double eZ)
+        {
+            var path = Host.GetNavPath(sX, sY, sZ, eX, eY, eZ);
+
+            if (path.Count() < 1)
+                yield break;
+
+
+            for (int i = 0; i < path.Length / 3; i++)
+            {
+                var coords = Array.ConvertAll(path.Skip(i * 3).Take(3).ToArray(), x => (double)x);
+
+                yield return new Point3D(coords);
+            }
+        }
+
+        /// <summary>
+        /// From me to spawn object.
+        /// </summary>
+        public double GetNavDist(SpawnObject obj)
+            => obj != null ? GetNavDist(obj.X, obj.Y, obj.Z) : 0;
+
+        /// <summary>
+        /// From me to coordinates.
+        /// </summary>
+        public double GetNavDist(double x, double y, double z)
+            => GetNavDist(Host.me.X, Host.me.Y, Host.me.Z, x, y, z);
+
+        public double GetNavDist(double sX, double sY, double sZ, double eX, double eY, double eZ)
+        {
+            var path = GetNavPath(sX, sY, sZ, eX, eY, eZ).ToArray();
+
+            if (path.Length < 1)
+                return 0;
+
+
+            Point3D temp = null;
+            double dist = 0;
+
+            for (int i = 0; i < path.Count(); i++)
+            {
+                if (temp != null)
+                {
+                    dist += Math.Sqrt(Math.Pow((path[i].X - temp.X), 2.0) + Math.Pow((path[i].Y - temp.Y), 2.0) + Math.Pow((path[i].Z - temp.Z), 2.0));
+                }
+
+                temp = path[i];
+            }
+
+            return dist;
+        }
+
+        #endregion
+
+        #region Math
 
         public double AngleToRadians(double angle)
         {
@@ -174,56 +239,6 @@ namespace AeonMiner
             return Math.Abs(((int)(ang / 180) * 360) - ang) < angle;
         }
 
-        public IEnumerable<Point3D> GetNavPath(double sX, double sY, double sZ, double eX, double eY, double eZ)
-        {
-            var path = Host.GetNavPath(sX, sY, sZ, eX, eY, eZ);
-
-            if (path.Count() < 1)
-                yield break;
-
-
-            for (int i = 0; i < path.Length / 3; i++)
-            {
-                var coords = Array.ConvertAll(path.Skip(i * 3).Take(3).ToArray(), x => (double)x);
-
-                yield return new Point3D(coords);
-            }
-        }
-
-        /// <summary>
-        /// From me to spawn object.
-        /// </summary>
-        public double GetNavDist(SpawnObject obj)
-            => obj != null ? GetNavDist(obj.X, obj.Y, obj.Z) : 0;
-
-        /// <summary>
-        /// From me to coordinates.
-        /// </summary>
-        public double GetNavDist(double x, double y, double z) 
-            => GetNavDist(Host.me.X, Host.me.Y, Host.me.Z, x, y, z);
-
-        public double GetNavDist(double sX, double sY, double sZ, double eX, double eY, double eZ)
-        {
-            var path = GetNavPath(sX, sY, sZ, eX, eY, eZ).ToArray();
-
-            if (path.Length < 1)
-                return 0;
-
-
-            Point3D temp = null;
-            double dist = 0;
-            
-            for (int i = 0; i < path.Count(); i++)
-            {
-                if (temp != null)
-                {
-                    dist += Math.Sqrt(Math.Pow((path[i].X - temp.X), 2.0) + Math.Pow((path[i].Y - temp.Y), 2.0) + Math.Pow((path[i].Z - temp.Z), 2.0));
-                }
-
-                temp = path[i];
-            }
-
-            return dist;
-        }
+        #endregion
     }
 }

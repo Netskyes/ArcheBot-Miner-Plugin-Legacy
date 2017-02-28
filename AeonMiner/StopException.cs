@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AeonMiner.Handlers
+namespace AeonMiner
 {
     public class StopException : Exception
     {

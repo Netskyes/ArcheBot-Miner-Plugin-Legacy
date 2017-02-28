@@ -10,15 +10,15 @@ namespace AeonMiner.Modules
 {
     using Data;
     using Enums;
-    using Handlers;
+    using Helpers;
 
-    public sealed partial class BaseModule : Helpers
+    public sealed partial class BaseModule : CoreHelper
     {
-        private MiningStats stats;
         private MineTask mineTask;
-        
+        private Statistics mineStats;
+
         private State state = State.Check;
-        private NodeHandle node;
+        private NodeHelper node;
 
         private bool isMoving;
         private bool isMining;
@@ -71,15 +71,15 @@ namespace AeonMiner.Modules
                 return false;
 
 
-            if ((stats == null) || (stats.ZoneName != mineTask.MiningZone) || UI.ResetStats())
+            if ((mineStats == null) || (mineStats.ZoneName != mineTask.MiningZone) || UI.ResetStats())
             {
-                stats = new MiningStats(UI);
-                stats.ZoneName = mineTask.MiningZone;
-                stats.LaborStartedWith = Host.me.laborPoints;
+                mineStats = new Statistics(UI);
+                mineStats.ZoneName = mineTask.MiningZone;
+                mineStats.LaborStartedWith = Host.me.laborPoints;
             }
 
 
-            return mineTask != null && stats != null;
+            return mineTask != null && mineStats != null;
         }
 
         private void HandleStopRequest()
@@ -92,8 +92,6 @@ namespace AeonMiner.Modules
                 Host.RunPlugin(settings.PluginRunName);
             }
         }
-
-        
 
 
         private void Execute()
@@ -174,6 +172,9 @@ namespace AeonMiner.Modules
                 return;
             }
 
+            if (!InNavMesh(Host.me) && !ComeInsideMesh())
+                return;
+                
             Host.SetLastError(LastError.Unknown);
 
 
@@ -228,15 +229,15 @@ namespace AeonMiner.Modules
 
             if (result)
             {
-                stats.VeinsMined++;
+                mineStats.VeinsMined++;
 
                 if (node.IsFortunaVein(true))
                 {
-                    stats.FortunaVeins += 1;
+                    mineStats.FortunaVeins += 1;
                 }
                 else if (node.IsUnidentifiedVein(true))
                 {
-                    stats.UnidentifiedVeins += 1;
+                    mineStats.UnidentifiedVeins += 1;
                 }
 
 
@@ -261,11 +262,11 @@ namespace AeonMiner.Modules
         {
             while (token.IsAlive())
             {
-                stats.RunTime += 1;
-                stats.AvgMinedPerHour = (int)((double)stats.VeinsMined / (double)stats.RunTime * 3600);
+                mineStats.RunTime += 1;
+                mineStats.AvgMinedPerHour = (int)((double)mineStats.VeinsMined / (double)mineStats.RunTime * 3600);
 
                 // Estimate to burn labor
-                var estimate = stats.GetBurnEstimate(Host.me.laborPoints);
+                var estimate = mineStats.GetBurnEstimate(Host.me.laborPoints);
                 var esDateTime = new DateTime(estimate.Ticks);
 
                 UI.UpdateLabel(UI.lbl_EstimatingTime, esDateTime.ToString("HH:mm:ss"));
@@ -347,12 +348,12 @@ namespace AeonMiner.Modules
         }
 
 
-        // Add "Come Inside Mesh"
-
         private void BeginPatrol()
         {
+            Func<bool> TaskMatch = () => mining.FindNode() != null || (settings.FightAggroMobs && InCombat());
+
             isMoving = true;
-            MoveUnless(() => mining.GetNode() != null || (settings.FightAggroMobs && InCombat()));
+            MoveUnless(TaskMatch);
 
 
             Log("Patrolling...");
@@ -361,7 +362,14 @@ namespace AeonMiner.Modules
             isMoving = false;
 
 
-            // ... Do something!
+            if (result)
+            {
+                behavior.RandomLooking(TaskMatch);
+            }
+            else
+            {
+                // ...
+            }
         }
 
         private bool MoveToPatrolPoint()
@@ -375,44 +383,25 @@ namespace AeonMiner.Modules
             return Host.ComeTo(point.x, point.y, point.z);
         }
 
-        private void RotateTo(double x, double y, Func<bool> eval = null)
+        private bool ComeInsideMesh()
         {
-            Func<int> GetAngle = () =>
+            Func<bool> TaskMatch = () => InNavMesh(Host.me);
+
+            isMoving = true;
+            MoveUnless(TaskMatch);
+
+
+            bool result = MoveToPatrolPoint();
+            isMoving = false;
+
+
+            if (!result && Host.GetLastError() == LastError.MoveTooFarDistance)
             {
-                int angle = Host.angle(Host.me, x, y); return ((angle / 180) * 360) - angle;
-            };
-
-
-            if (GetAngle() < 0)
-            {
-                Host.RotateRight(true);
-
-                while (token.IsAlive() && GetAngle() < -6 && Host.rotateRightState)
-                {
-                    if (eval != null && !eval.Invoke())
-                        break;
-
-
-                    Utils.Delay(50, token);
-                }
-            }
-            else
-            {
-                Host.RotateLeft(true);
-
-                while (token.IsAlive() && GetAngle() > 6 && Host.rotateLeftState)
-                {
-                    if (eval != null && !eval.Invoke())
-                        break;
-
-
-                    Utils.Delay(50, token);
-                }
+                throw new StopException("Navigation issue, stopping.");
             }
 
-            // Reset states
-            Host.RotateLeft(false);
-            Host.RotateRight(false);
+
+            return TaskMatch();
         }
 
 
@@ -588,7 +577,7 @@ namespace AeonMiner.Modules
 
         private void OnLaborAmountChanged(int count)
         {
-            stats.LaborBurned += Math.Abs(count);
+            mineStats.LaborBurned += Math.Abs(count);
 
             Utils.InvokeOn(UI, () => UI.lbl_LaborRemaining.Text = Host.me.laborPoints.ToString());
         }
@@ -606,7 +595,7 @@ namespace AeonMiner.Modules
         {
             if (obj.type == BotTypes.Player && obj2 == Host.me && skill.id == 20256)
             {
-                stats.SuspectReports += 1;
+                mineStats.SuspectReports += 1;
                 UI.GameLog($"You have been reported by: {obj.name}");
             }
         }
@@ -615,7 +604,7 @@ namespace AeonMiner.Modules
         {
             if (chatType == ChatType.Whisper)
             {
-                stats.WhispersReceived += 1;
+                mineStats.WhispersReceived += 1;
                 UI.GameLog($"From {sender}: {text}");
             }
         }
