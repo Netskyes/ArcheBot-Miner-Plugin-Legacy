@@ -43,10 +43,10 @@ namespace AeonMiner.Modules
 
         private bool StartUp()
         {
-            // Fetch preferences
+            // Fetch and save config
             settings = UI.SaveSettings();
 
-            // Initialize modules
+            // Define modules
             gps = new GpsModule(Host);
             mining = new MiningModule(settings, Host, gps, token);
             combat = new CombatModule(settings, Host, gps, token);
@@ -56,7 +56,9 @@ namespace AeonMiner.Modules
             return Initialize();
         }
 
-        
+        private void BeginLoop() => (loopTask) = Task.Run(() => Loop(), token);
+
+
         public async void Start()
         {
             // Generate token
@@ -95,8 +97,6 @@ namespace AeonMiner.Modules
         }
 
 
-        private void BeginLoop() => (loopTask) = Task.Run(() => Loop(), token);
-
         private void Loop()
         {
             while (token.IsAlive())
@@ -107,18 +107,14 @@ namespace AeonMiner.Modules
                 }
                 catch (StopException e)
                 {
-                    Host.Log(e.Message);
+                    Log(e.Message);
                     Task.Run(() => HandleStopRequest());
 
                     return;
                 }
-                catch (Exception e)
-                {
-                    LogException(e);
-
-                    // Default state
-                    SetState(State.Check);
-                }
+                catch
+                // Error exception
+                (Exception e) { LogException(e); }
 
 
                 Utils.Delay(50, token);

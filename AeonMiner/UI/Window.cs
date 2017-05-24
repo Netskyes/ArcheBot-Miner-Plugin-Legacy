@@ -9,7 +9,6 @@ using ArcheBot.Bot.Classes;
 namespace AeonMiner.UI
 {
     using Data;
-    using Utility;
     using Configs;
     using Helpers;
 
@@ -31,6 +30,7 @@ namespace AeonMiner.UI
             GetMiningZones();
             GetPortals();
             GetMiningNodes();
+            GetSkills();
 
             // Loads prefs
             LoadTasks();
@@ -73,25 +73,57 @@ namespace AeonMiner.UI
             });
         }
 
+        private void AddItemToList(Control item, ListBox inLbox, bool checkExists = false)
+        {
+            Utils.InvokeOn(this, () =>
+            {
+                object selected = null;
+
+                if (item is ListBox)
+                {
+                    selected = (item as ListBox).SelectedItem;
+                }
+                else if (item is ComboBox)
+                {
+                    selected = (item as ComboBox).SelectedItem;
+                }
+
+
+                if (selected == null || (checkExists && inLbox.Items.Contains(selected)))
+                {
+                    return;
+                }
+
+                inLbox.Items.Add(selected);
+            });
+        }
+
         private bool MoveListItem(int direction, ListBox box)
         {
-            if (box.SelectedItem == null || box.SelectedIndex < 0)
-                return false;
+            bool result = false;
+
+            Utils.InvokeOn(this, () =>
+            {
+                var item = box.SelectedItem;
+
+                if (item == null || box.SelectedIndex < 0)
+                    return;
+
+                
+                int index = box.SelectedIndex, nIndex = (index + direction);
+
+                if (nIndex < 0 || nIndex >= box.Items.Count)
+                    return;
 
 
-            var item = box.SelectedItem;
-            int index = box.SelectedIndex, nIndex = (index + direction);
+                box.Items.RemoveAt(index);
+                box.Items.Insert(nIndex, item);
 
-            if (nIndex < 0 || nIndex >= box.Items.Count)
-                return false;
+                box.SetSelected(nIndex, true);
+                result = true;
+            });
 
-
-            box.Items.RemoveAt(index);
-            box.Items.Insert(nIndex, item);
-
-            box.SetSelected(nIndex, true);
-
-            return true;
+            return result;
         }
 
         public void UpdateButtonState(string text, bool state = true)
@@ -213,13 +245,21 @@ namespace AeonMiner.UI
                 chkbox_AutoLevelUp.Checked = settings.AutoLevelUp;
                 chkbox_BeginDailyQuest.Checked = settings.BeginDailyQuest;
                 chkbox_FinishDailyQuest.Checked = settings.FinishDailyQuest;
+                chkbox_MailProducts.Checked = settings.MailProducts;
+                chkbox_UseExpressDelivery.Checked = settings.UseExpressDelivery;
+                chkbox_ExcludeUnwantedItems.Checked = settings.ExcludeUnwantedItems;
+                chkbox_AuctionProducts.Checked = settings.AuctionProducts;
                 chkbox_RemoveSuspect.Checked = settings.RemoveSuspect;
                 chkbox_UseDash.Checked = settings.UseDash;
                 chkbox_UseFreerunner.Checked = settings.UseFreerunner;
                 chkbox_UseTeleportation.Checked = settings.UseTeleportation;
                 chkbox_UseQuickstep.Checked = settings.UseQuickstep;
                 chkbox_UseCometsBoon.Checked = settings.UseCometsBoon;
-                
+                chkbox_UseCampfire.Checked = settings.UseCampfire;
+                chkbox_UseHastenerScroll.Checked = settings.UseHastenerScroll;
+                chkbox_UseLaborPotion.Checked = settings.UseLaborPotion;
+                chkbox_MakeLaborRecovery.Checked = settings.MakeLaborRecovery;
+
 
                 if (settings.TaskName != string.Empty)
                 {
@@ -246,16 +286,28 @@ namespace AeonMiner.UI
                     }
                 }
 
-                var radio = container_WhenDone.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Name == settings.FinalAction);
+                var optionA = container_WhenDone.Controls.OfType<OptionBox>().FirstOrDefault(r => r.OptionName == settings.FinalAction);
 
-                if (radio != null)
+                if (optionA != null)
                 {
-                    radio.Checked = true;
+                    optionA.Checked = true;
                 }
 
                 txtbox_PluginRunName.Text = settings.PluginRunName;
+                txtbox_MailRecipient.Text = settings.MailRecipient;
+
+                var optionB = container_LaborRecovery.Controls.OfType<OptionBox>().FirstOrDefault(r => r.OptionName == settings.LaborRecoveryType);
+
+                if (optionB != null)
+                {
+                    optionB.Checked = true;
+                }
+
                 lbox_CleanItems.Items.AddRange(settings.CleanItems.ToArray());
+
+
                 num_MinLaborPoints.Value = settings.MinLaborPoints;
+                num_ResumeWhenLabor.Value = settings.ResumeWhenLabor;
             });
         }
 
@@ -272,16 +324,26 @@ namespace AeonMiner.UI
                 settings.AutoLevelUp = chkbox_AutoLevelUp.Checked;
                 settings.BeginDailyQuest = chkbox_BeginDailyQuest.Checked;
                 settings.FinishDailyQuest = chkbox_FinishDailyQuest.Checked;
+                settings.MailProducts = chkbox_MailProducts.Checked;
+                settings.UseExpressDelivery = chkbox_UseExpressDelivery.Checked;
+                settings.ExcludeUnwantedItems = chkbox_ExcludeUnwantedItems.Checked;
+                settings.AuctionProducts = chkbox_AuctionProducts.Checked;
                 settings.RemoveSuspect = chkbox_RemoveSuspect.Checked;
                 settings.UseDash = chkbox_UseDash.Checked;
                 settings.UseFreerunner = chkbox_UseFreerunner.Checked;
                 settings.UseTeleportation = chkbox_UseTeleportation.Checked;
                 settings.UseQuickstep = chkbox_UseQuickstep.Checked;
                 settings.UseCometsBoon = chkbox_UseCometsBoon.Checked;
+                settings.UseCampfire = chkbox_UseCampfire.Checked;
+                settings.UseHastenerScroll = chkbox_UseHastenerScroll.Checked;
+                settings.UseLaborPotion = chkbox_UseLaborPotion.Checked;
+                settings.MakeLaborRecovery = chkbox_MakeLaborRecovery.Checked;
                 settings.TaskName = lbox_MiningTasks.GetItemText(lbox_MiningTasks.SelectedItem);
                 settings.TravelMount = cmbox_MountsList.GetItemText(cmbox_MountsList.SelectedItem);
-                settings.FinalAction = container_WhenDone.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked).Name;
+                settings.FinalAction = container_WhenDone.Controls.OfType<OptionBox>().FirstOrDefault(r => r.Checked)?.OptionName;
                 settings.PluginRunName = txtbox_PluginRunName.Text;
+                settings.MailRecipient = txtbox_MailRecipient.Text;
+                settings.LaborRecoveryType = container_LaborRecovery.Controls.OfType<OptionBox>().FirstOrDefault(r => r.Checked)?.OptionName;
                 settings.CleanItems = lbox_CleanItems.Items.OfType<string>().ToList();
                 settings.MinLaborPoints = (int)num_MinLaborPoints.Value;
             });
@@ -427,11 +489,8 @@ namespace AeonMiner.UI
 
             Utils.InvokeOn(this, () =>
             {
-                foreach (var m in mounts)
-                {
-                    cmbox_MountsList.Items.Add(m.Name);
-                }
-
+                cmbox_MountsList.Items.Clear();
+                cmbox_MountsList.Items.AddRange(mounts.ToArray());
                 cmbox_MountsList.SelectedIndex = 0;
             });
         }
@@ -446,6 +505,7 @@ namespace AeonMiner.UI
 
             Utils.InvokeOn(this, () =>
             {
+                cmbox_ZonesList.Items.Clear();
                 cmbox_ZonesList.Items.AddRange(zones.ToArray());
                 cmbox_ZonesList.SelectedIndex = 0;
             });
@@ -461,8 +521,8 @@ namespace AeonMiner.UI
 
             Utils.InvokeOn(this, () =>
             {
-                cmbox_PortalsList.Items.AddRange
-                    (book.getDistricts().Select(d => d.name).OrderBy(d => d).ToArray());
+                cmbox_PortalsList.Items.Clear();
+                cmbox_PortalsList.Items.AddRange(book.getDistricts().Select(d => d.name).OrderBy(d => d).ToArray());
                 cmbox_PortalsList.SelectedIndex = 0;
             });
         }
@@ -515,20 +575,48 @@ namespace AeonMiner.UI
 
         private void GetMiningNodes()
         {
-            var nodes = MiningNodes.GetAll();
+            Utils.InvokeOn(this, () =>
+            {
+                chklbox_IgnoreVeins.Items.AddRange(MiningNodes.GetAll().Select(n => n.Name).ToArray());
+            });
+        }
+
+        private void GetMiningProducts()
+        {
+            var items = MiningNodes.GetProducts().Select
+                (i => (Host.clientVersion != ClientVersion.RussiaMailRu) ? i.Value : i.Value.ToRussian());
 
             Utils.InvokeOn(this, () =>
             {
-                foreach (var node in nodes)
-                {
-                    chklbox_IgnoreVeins.Items.Add(node.Name);
-                }
+                lbox_ItemsList.Items.Clear();
+                lbox_ItemsList.Items.AddRange(items.ToArray());
+            });
+        }
+
+        private void GetSkills()
+        {
+            var classes = Host.me.getAbilities().Where(a => a.active);
+
+
+            var skills = Host.me.getSkills().Where
+                (s => classes.Any(c => s.db.abilityId == (int)c.id)).Select(s => s.name);
+
+            if (skills.Count() < 1)
+                return;
+
+
+            Utils.InvokeOn(this, () =>
+            {
+                cmbox_SkillsList.Items.Clear();
+                cmbox_SkillsList.Items.AddRange(skills.ToArray());
+                cmbox_SkillsList.SelectedIndex = 0;
             });
         }
 
         #endregion
 
-        #region Events Handlers
+
+        #region Click Events
 
         private void btn_Start_Click(object sender, EventArgs e)
         {
@@ -577,30 +665,6 @@ namespace AeonMiner.UI
             });
         }
 
-        private void btn_AddToCleanItems_Click(object sender, EventArgs e)
-        {
-            Utils.InvokeOn(this, () =>
-            {
-                var selected = lbox_ItemsList.SelectedItem;
-
-                if (selected == null)
-                    return;
-
-
-                string name = selected.ToString();
-
-                if (lbox_CleanItems.Items.Contains(name))
-                    return;
-
-
-                lbox_CleanItems.Items.Add(name);
-            });
-        }
-
-        #endregion
-
-        #region Events
-
         private void btn_MoveTaskUp_Click(object sender, EventArgs e)
         {
             if (MoveListItem(-1, lbox_MiningTasks))
@@ -617,6 +681,70 @@ namespace AeonMiner.UI
             }
         }
 
+        private void btn_MoveRotationUp_Click(object sender, EventArgs e)
+        {
+            MoveListItem(-1, lbox_Rotation);
+        }
+
+        private void btn_MoveRotationDown_Click(object sender, EventArgs e)
+        {
+            MoveListItem(1, lbox_Rotation);
+        }
+
+        private void btn_GetInventoryItems_Click(object sender, EventArgs e)
+        {
+            GetInventoryItems();
+        }
+
+        private void btn_GetProducts_Click(object sender, EventArgs e)
+        {
+            GetMiningProducts();
+        }
+
+        private void btn_AddToCleanItems_Click(object sender, EventArgs e)
+        {
+            AddItemToList(lbox_ItemsList, lbox_CleanItems, true);
+        }
+
+        private void btn_AddToRotation_Click(object sender, EventArgs e)
+        {
+            AddItemToList(cmbox_SkillsList, lbox_Rotation);
+        }
+
+        private void btn_AddToBuffs_Click(object sender, EventArgs e)
+        {
+            AddItemToList(cmbox_SkillsList, lbox_Buffs, true);
+        }
+
+        private void btn_AddToHeals_Click(object sender, EventArgs e)
+        {
+            AddItemToList(cmbox_SkillsList, lbox_Heals, true);
+        }
+
+        private void btn_MoveBuffsUp_Click(object sender, EventArgs e)
+        {
+            MoveListItem(-1, lbox_Buffs);
+        }
+
+        private void btn_MoveBuffsDown_Click(object sender, EventArgs e)
+        {
+            MoveListItem(1, lbox_Buffs);
+        }
+
+        private void btn_MoveHealsUp_Click(object sender, EventArgs e)
+        {
+            MoveListItem(-1, lbox_Heals);
+        }
+
+        private void btn_MoveHealsDown_Click(object sender, EventArgs e)
+        {
+            MoveListItem(1, lbox_Heals);
+        }
+
+        #endregion
+
+        #region Double Click Events
+
         private void lbox_MiningTasks_DoubleClick(object sender, EventArgs e)
         {
             Utils.InvokeOn(this, () =>
@@ -628,7 +756,7 @@ namespace AeonMiner.UI
 
                 string name = item.ToString();
 
-                
+
                 lock (miningTasksLock)
                 {
                     // Remove key
@@ -639,11 +767,35 @@ namespace AeonMiner.UI
                         SaveTasks();
                     }
                 }
-                
+
                 // Remove item
                 lbox_MiningTasks.Items.Remove(item);
             });
         }
+
+        private void lbox_CleanItems_DoubleClick(object sender, EventArgs e)
+        {
+            PopFromList(lbox_CleanItems);
+        }
+
+        private void lbox_Rotation_DoubleClick(object sender, EventArgs e)
+        {
+            PopFromList(lbox_Rotation);
+        }
+
+        private void lbox_Buffs_DoubleClick(object sender, EventArgs e)
+        {
+            PopFromList(lbox_Buffs);
+        }
+
+        private void lbox_Heals_DoubleClick(object sender, EventArgs e)
+        {
+            PopFromList(lbox_Heals);
+        }
+
+        #endregion
+
+        #region Changed Events
 
         private void MiningTasks_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -657,6 +809,53 @@ namespace AeonMiner.UI
                 }
             });
         }
+
+        private void ZonesList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!isLoadingTask) SaveTask();
+        }
+
+        private void PortalsList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!isLoadingTask) SaveTask();
+        }
+
+
+        private void chkbox_HideGameClient_CheckedChanged(object sender, EventArgs e)
+        {
+            if (((CheckBox)sender).Checked)
+            {
+                Host.HideGameClient();
+            }
+            else
+            {
+                Host.ShowGameClient();
+            }
+        }
+
+        private void chkbox_UseTaskTime_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!isLoadingTask) SaveTask();
+        }
+
+
+        private void chklbox_IgnoreVeins_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (!isLoadingTask)
+            {
+                BeginInvoke(new Action(() => SaveTask()));
+            }
+        }
+
+
+        private void num_TaskTime_ValueChanged(object sender, EventArgs e)
+        {
+            if (!isLoadingTask) SaveTask();
+        }
+
+        #endregion
+
+        #region Other Events
 
         private async void txtbox_ItemSearch_KeyDown(object sender, KeyEventArgs e)
         {
@@ -689,48 +888,6 @@ namespace AeonMiner.UI
 
             Utils.InvokeOn(this, () => txtbox_ItemSearch.Enabled = true);
         }
-
-        private void btn_GetInventoryItems_Click(object sender, EventArgs e)
-        {
-            GetInventoryItems();
-        }
-
-        private void lbox_CleanItems_DoubleClick(object sender, EventArgs e)
-        {
-            PopFromList(lbox_CleanItems);
-        }
-
-        #region Task Value Changes
-
-        private void ZonesList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!isLoadingTask) SaveTask();
-        }
-
-        private void PortalsList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!isLoadingTask) SaveTask();
-        }
-
-        private void num_TaskTime_ValueChanged(object sender, EventArgs e)
-        {
-            if (!isLoadingTask) SaveTask();
-        }
-
-        private void chkbox_UseTaskTime_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!isLoadingTask) SaveTask();
-        }
-
-        private void chklbox_IgnoreVeins_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            if (!isLoadingTask)
-            {
-                BeginInvoke(new Action(() => SaveTask()));
-            }
-        }
-
-        #endregion
 
         #endregion
     }

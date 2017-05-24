@@ -8,7 +8,6 @@ namespace AeonMiner
 {
     using UI;
     using Modules;
-    using Utility;
 
     public sealed class Host : Core
     {
@@ -24,51 +23,20 @@ namespace AeonMiner
         /// Loads plugin into main app domain.
         /// </summary>
         public static bool isReleaseVersion = true;
-        public static int storePluginId = 1;
+        public static int storePluginId = 20;
 #endif
         public UIContext UIContext { get; private set; }
         public BaseModule BaseModule { get; private set; }
 
         
-        private void CheckResources()
-        {
-            if (!Directory.Exists(Paths.Folder))
-            {
-                try
-                {
-                    Directory.CreateDirectory(Paths.Folder);
-                }
-                catch
-                {
-                }
-            }
-
-            foreach (string name in Paths.GetStructure)
-            {
-                string path = Path.Combine(Paths.PluginPath, name);
-
-                if (!Directory.Exists(path))
-                {
-                    try
-                    {
-                        Directory.CreateDirectory(path);
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-        }
-
         public bool IsGameReady()
         {
             return me != null && gameState == GameState.Ingame;
         }
 
-
         private void Initialize()
         {
-            CheckResources();
+            Paths.Validate();
 
             UIContext = new UIContext(new Window(this));
             BaseModule = new BaseModule(this);

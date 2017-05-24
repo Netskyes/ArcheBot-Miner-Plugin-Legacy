@@ -6,6 +6,6 @@
         Search,
         Move,
         Mine,
-        Control
+        Services
     }
 }

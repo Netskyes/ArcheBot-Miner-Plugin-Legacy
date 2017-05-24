@@ -262,7 +262,10 @@ namespace AeonMiner.Modules
 
         public void AddIgnorePhases(uint[] phases)
         {
-            foreach (var phase in phases) ignorePhases.Add(phase);
+            foreach (var phase in phases.Where(p => !ignorePhases.Contains(p)))
+            {
+                ignorePhases.Add(phase);
+            }
         }
 
 

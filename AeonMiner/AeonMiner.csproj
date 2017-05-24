@@ -55,8 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Collections\Translations.cs" />
+    <Compile Include="Data\MemLock.cs" />
+    <Compile Include="Enums\Services.cs" />
+    <Compile Include="Enums\State.cs" />
     <Compile Include="Modules\BehaviorModule.cs" />
-    <Compile Include="Extensions\Extension.cs" />
+    <Compile Include="Extensions\TaskExtension.cs" />
     <Compile Include="Data\Collections\Base.cs" />
     <Compile Include="Data\Collections\MiningNodes.cs" />
     <Compile Include="Data\Node.cs" />
@@ -64,7 +68,6 @@
     <Compile Include="Data\Statistics.cs" />
     <Compile Include="Helpers\NodeHelper.cs" />
     <Compile Include="Enums\MapUseType.cs" />
-    <Compile Include="Enums\State.cs" />
     <Compile Include="Helpers\CoreHelper.cs" />
     <Compile Include="Helpers\MountHelper.cs" />
     <Compile Include="Modules\CombatModule.cs" />

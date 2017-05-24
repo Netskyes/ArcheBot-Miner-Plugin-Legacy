@@ -72,6 +72,11 @@ namespace AeonMiner.Data
             return nodes.Any(n => n.Phases.Contains(phaseId));
         }
 
+        public static Dictionary<uint, string> GetProducts()
+        {
+            return products;
+        }
+
         public static bool IsProduct(uint itemId) => products.ContainsKey(itemId);
 
 

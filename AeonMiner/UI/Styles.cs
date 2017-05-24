@@ -19,3 +19,8 @@ internal class Container : Panel
         }
     }
 }
+
+internal class OptionBox : RadioButton
+{
+    public string OptionName { get; set; }
+}

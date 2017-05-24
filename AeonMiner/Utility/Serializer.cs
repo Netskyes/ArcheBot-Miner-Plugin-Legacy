@@ -4,7 +4,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
-namespace AeonMiner.Utility
+namespace AeonMiner
 {
     public static class Serializer
     {

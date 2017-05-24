@@ -70,10 +70,41 @@ namespace AeonMiner.Modules
             }
         }
 
-
-        public List<GpsPoint> GetPointsByName(string match)
+        
+        public bool MoveToPoint(GpsPoint point)
         {
-            return GetAllGpsPoints().Where(p => p.name.ToLower().Contains(match.ToLower())).ToList();
+            if (point != null)
+            {
+                return Host.MoveTo(point.x, point.y, point.z);
+            }
+
+            return false;
         }
+
+        public bool PointExists(string name, bool match = true)
+        {
+            if (match)
+            {
+                return GetPoint(name) != null;
+            }
+            else
+            {
+                return GetPointsByName(name).Count > 0;
+            }
+        }
+
+        public double DistToPoint(GpsPoint point)
+        {
+            return (point != null) ? Host.dist(point.x, point.y, point.z) : 0;
+        }
+
+
+        public bool MoveToPoint(string name) => MoveToPoint(GetPoint(name));
+
+        public double DistToPoint(string name) => DistToPoint(GetPoint(name));
+        public double DistToNearest() => DistToPoint(GetNearestPoint());
+
+        public GpsPolygon GetPolyByCoords(double x, double y) => GetAllGpsPolygons().Find(p => p.PointInZone(x, y));
+        public List<GpsPoint> GetPointsByName(string match) => GetAllGpsPoints().Where(p => p.name.ToLower().Contains(match.ToLower())).ToList();
     }
 }

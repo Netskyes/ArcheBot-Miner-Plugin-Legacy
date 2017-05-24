@@ -14,8 +14,9 @@ namespace AeonMiner.Data
         public Statistics(Window ui)
         {
             UI = ui;
-            DateTime = DateTime.Now;
         }
+
+        public string ZoneName { get; set; }
 
         #region Fields
 
@@ -34,19 +35,40 @@ namespace AeonMiner.Data
 
         #endregion
 
-        // Constants
-        public string ZoneName = string.Empty;
-        public DateTime DateTime;
 
+        public void MakeAvgMinedPerHour()
+        {
+            AvgMinedPerHour = (int)((double)VeinsMined / (double)RunTime * 3600);
+        }
+
+        public void MakeEstimateBurnTime(int remaining)
+        {
+            double timePerLabor = (double)RunTime / (double)(LaborBurned);
+            double timeTotal = timePerLabor * (double)remaining;
+
+            var estimates = new DateTime(TimeSpan.FromSeconds(timeTotal).Ticks).ToString("HH:mm:ss");
+
+
+            UI.UpdateLabel(UI.lbl_EstimatingTime, estimates);
+        }
+
+        public void Save()
+        {
+        }
+
+
+        /// <summary>
+        /// Time in seconds.
+        /// </summary>
         public int RunTime
         {
             get { return _runTime; }
             set
             {
-                _runTime = value;
+                (_runTime) = value;
 
-                long elapse = TimeSpan.FromSeconds(RunTime).Ticks;
-                UI.UpdateLabel(UI.lbl_RunTime, new DateTime(elapse).ToString("HH:mm:ss"));
+                var elapse = new DateTime(TimeSpan.FromSeconds(RunTime).Ticks).ToString("HH:mm:ss");
+                UI.UpdateLabel(UI.lbl_RunTime, elapse);
             }
         }
 
@@ -55,7 +77,8 @@ namespace AeonMiner.Data
             get { return _avgMinedPerHour; }
             set
             {
-                _avgMinedPerHour = value;
+                (_avgMinedPerHour) = value;
+
                 UI.UpdateLabel(UI.lbl_AvgMinedPerHour, AvgMinedPerHour.ToString());
             }
         }
@@ -65,7 +88,8 @@ namespace AeonMiner.Data
             get { return _laborStartedWith; }
             set
             {
-                _laborStartedWith = value;
+                (_laborStartedWith) = value;
+
                 UI.UpdateLabel(UI.lbl_LaborStartedWith, LaborStartedWith.ToString());
             }
         }
@@ -75,7 +99,8 @@ namespace AeonMiner.Data
             get { return _laborBurned; }
             set
             {
-                _laborBurned = value;
+                (_laborBurned) = value;
+
                 UI.UpdateLabel(UI.lbl_LaborBurned, LaborBurned.ToString());
             }
         }
@@ -85,7 +110,8 @@ namespace AeonMiner.Data
             get { return _veinsMined; }
             set
             {
-                _veinsMined = value;
+                (_veinsMined) = value;
+
                 UI.UpdateLabel(UI.lbl_VeinsMined, VeinsMined.ToString());
             }
         }
@@ -95,7 +121,8 @@ namespace AeonMiner.Data
             get { return _fortunaVeins; }
             set
             {
-                _fortunaVeins = value;
+                (_fortunaVeins) = value;
+
                 UI.UpdateLabel(UI.lbl_FortunaVeins, FortunaVeins.ToString());
             }
         }
@@ -105,7 +132,8 @@ namespace AeonMiner.Data
             get { return _unidentifiedVeins; }
             set
             {
-                _unidentifiedVeins = value;
+                (_unidentifiedVeins) = value;
+
                 UI.UpdateLabel(UI.lbl_UniVeins, UnidentifiedVeins.ToString());
             }
         }
@@ -115,7 +143,8 @@ namespace AeonMiner.Data
             get { return _suspectReports; }
             set
             {
-                _suspectReports = value;
+                (_suspectReports) = value;
+
                 UI.UpdateLabel(UI.lbl_SuspectReports, SuspectReports.ToString());
             }
         }
@@ -125,7 +154,8 @@ namespace AeonMiner.Data
             get { return _whispersReceived; }
             set
             {
-                _whispersReceived = value;
+                (_whispersReceived) = value;
+
                 UI.UpdateLabel(UI.lbl_WhispersReceived, WhispersReceived.ToString());
             }
         }
@@ -135,26 +165,10 @@ namespace AeonMiner.Data
             get { return _playersPeak; }
             set
             {
-                _playersPeak = value;
+                (_playersPeak) = value;
+
                 UI.UpdateLabel(UI.lbl_PlayersPeak, PlayersPeak.ToString());
             }
-        }
-
-
-        public bool IsPlayerExists(int hash) => _players.Exists(p => p == hash);
-        public void AddPlayer(int hash) => _players.Add(hash);
-
-
-        public TimeSpan GetBurnEstimate(int myLabor)
-        {
-            double timePerLabor = (double)RunTime / (double)(LaborBurned);
-            double timeTotal = timePerLabor * (double)myLabor;
-
-            return TimeSpan.FromSeconds((int)timeTotal);
-        }
-
-        public void Save()
-        {
         }
     }
 }

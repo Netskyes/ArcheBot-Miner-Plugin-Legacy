@@ -87,14 +87,41 @@ namespace AeonMiner
             return BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
         }
 
-        public static async Task<HttpStatusCode> HttpJsonPost(string uri, string json)
+
+        public static async Task<T> GetRequest<T>(string url)
         {
-            var client = new HttpClient();
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            try
+            {
+                using (var http = new HttpClient())
+                {
+                    var response = await http.GetAsync(url);
+                    var contentString = await response.Content.ReadAsStringAsync();
 
-            var res = await client.PostAsync(uri, content);
+                    return Serializer.ToJsonObject<T>(contentString);
+                }
+            }
+            catch
+            {
+                return default(T);
+            }
+        }
 
-            return res.StatusCode;
+        public static async Task<T> PostRequest<T>(string url, HttpContent content)
+        {
+            try
+            {
+                using (var http = new HttpClient())
+                {
+                    var response = await http.PostAsync(url, content);
+                    var contentString = await response.Content.ReadAsStringAsync();
+
+                    return Serializer.ToJsonObject<T>(contentString);
+                }
+            }
+            catch
+            {
+                return default(T);
+            }
         }
     }
 }

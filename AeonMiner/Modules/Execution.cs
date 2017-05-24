@@ -15,10 +15,13 @@ namespace AeonMiner.Modules
     public sealed partial class BaseModule : CoreHelper
     {
         private MineTask mineTask;
-        private Statistics mineStats;
-
-        private State state = State.Check;
         private NodeHelper node;
+        private Statistics stats;
+        
+        private MemLock memory = new MemLock();
+
+        private State state;
+        private Services services;
 
         private bool isMoving;
         private bool isMining;
@@ -30,67 +33,44 @@ namespace AeonMiner.Modules
         {
             if (settings.TaskName == string.Empty)
             {
-                Host.Log("Please select a mining task.");
+                Log("Please select a mining task.");
                 return false;
             }
 
             if (!MakeTask(settings.TaskName))
             {
-                Host.Log("Something went wrong creating current mining task.");
+                Log("Something went wrong creating a mining task.");
                 return false;
             }
 
-            foreach (var vein in mineTask.IgnoreVeins)
+            #region Gps Validate
+
+            if (settings.MailProducts && !gps.PointExists("Mailbox", false))
             {
-                mining.AddIgnorePhases(MiningNodes.GetPhasesByName(vein));
+                Log("Missing gps points (Mailbox)! Required when Mail Items is active.");
+                return false;
             }
 
+            if (settings.RemoveSuspect && !gps.PointExists("Judge", false))
+            {
+                Log("Missing gps points (Judge)! Required when Remove Suspect is active.");
+                return false;
+            }
 
-            // Reset!
-            state = State.Check;
+            #endregion
+
+
+            // Resets
+            SetState(State.Check);
 
             // Events
             HookEvents();
-            
-            // Start tasks
+
+            // Begin Tasks
             Task.Run(() => RunTimer(), token);
 
-            
+
             return true;
-        }
-
-        private bool MakeTask(string name)
-        {
-            if (!UI.MiningTasks.ContainsKey(name))
-                return false;
-
-
-            mineTask = UI.MiningTasks[name];
-
-            if (mineTask == null || !gps.Load(mineTask.MiningZone))
-                return false;
-
-
-            if ((mineStats == null) || (mineStats.ZoneName != mineTask.MiningZone) || UI.ResetStats())
-            {
-                mineStats = new Statistics(UI);
-                mineStats.ZoneName = mineTask.MiningZone;
-                mineStats.LaborStartedWith = Host.me.laborPoints;
-            }
-
-
-            return mineTask != null && mineStats != null;
-        }
-
-        private void HandleStopRequest()
-        {
-            Stop(); 
-
-            // Post actions
-            if (settings.RunPlugin && settings.PluginRunName != string.Empty)
-            {
-                Host.RunPlugin(settings.PluginRunName);
-            }
         }
 
 
@@ -128,15 +108,131 @@ namespace AeonMiner.Modules
 #endif
                     Mine();
                     break;
+
+                case State.Services:
+#if DEBUG
+                    Host.Log("State: Services");
+#endif
+                    RunServices();
+                    break;
             }
         }
 
-        
+        private void RunServices()
+        {
+            switch (services)
+            {
+                case Services.Check:
+
+                    // Coordinate
+                    break;
+
+                case Services.Mail:
+
+                    // Mailing
+                    break;
+
+                case Services.Auction:
+
+                    // Auctioning
+                    break;
+
+                case Services.SuspectRemove:
+
+                    // Remove Suspect
+                    break;
+            }
+        }
+
+
+        private bool MakeTask(string name)
+        {
+            if (!UI.MiningTasks.ContainsKey(name))
+                return false;
+
+
+            mineTask = UI.MiningTasks[name];
+
+            if (mineTask == null || !gps.Load(mineTask.MiningZone))
+                return false;
+
+
+            foreach (var vein in mineTask.IgnoreVeins)
+            {
+                mining.AddIgnorePhases(MiningNodes.GetPhasesByName(vein));
+            }
+
+
+            if ((stats == null) || (stats.ZoneName != mineTask.MiningZone) || UI.ResetStats())
+            {
+                stats = new Statistics(UI);
+                stats.ZoneName = mineTask.MiningZone;
+                stats.LaborStartedWith = Host.me.laborPoints;
+            }
+
+
+            return mineTask != null && stats != null;
+        }
+
+        private void RunTimer()
+        {
+            while (token.IsAlive())
+            {
+                stats.RunTime += 1;
+
+                if (state != State.Services)
+                {
+                    int totalBurn = Math.Max(settings.MinLaborPoints, Host.me.laborPoints) - settings.MinLaborPoints;
+
+                    stats.MakeEstimateBurnTime(totalBurn);
+                    stats.MakeAvgMinedPerHour();
+                }
+
+
+                Utils.Delay(1000, token);
+            }
+        }
+
+        private void HandleStopRequest()
+        {
+            Stop(); 
+
+
+            switch(settings.FinalAction)
+            {
+                case "TerminateClient":
+                    Host.TerminateGameClient();
+                    break;
+
+                case "ToSelectionScreen":
+                    Host.LeaveWorldToCharacterSelect();
+                    break;
+            }
+
+            if (settings.RunPlugin && settings.PluginRunName != string.Empty)
+            {
+                Host.RunPlugin(settings.PluginRunName);
+            }
+        }
+
+
+
         private void Check()
         {
-            if (Host.me.laborPoints < settings.MinLaborPoints)
+            if (Host.me.laborPoints <= settings.MinLaborPoints)
             {
-                throw new StopException("Out of labor points, stopping.");
+                // ...
+            }
+
+            if (mineTask.UseTaskTime && stats.RunTime >= (mineTask.TaskTime * 60))
+            {
+                // ...
+            }
+
+
+            if (!InNavMesh(Host.me) && gps.DistToNearest() > 150)
+            {
+
             }
 
 
@@ -174,7 +270,7 @@ namespace AeonMiner.Modules
 
             if (!InNavMesh(Host.me) && !ComeInsideMesh())
                 return;
-                
+            
             Host.SetLastError(LastError.Unknown);
 
 
@@ -229,15 +325,15 @@ namespace AeonMiner.Modules
 
             if (result)
             {
-                mineStats.VeinsMined++;
+                stats.VeinsMined++;
 
                 if (node.IsFortunaVein(true))
                 {
-                    mineStats.FortunaVeins += 1;
+                    stats.FortunaVeins += 1;
                 }
                 else if (node.IsUnidentifiedVein(true))
                 {
-                    mineStats.UnidentifiedVeins += 1;
+                    stats.UnidentifiedVeins += 1;
                 }
 
 
@@ -253,28 +349,12 @@ namespace AeonMiner.Modules
                 Log(Host.GetLastError().ToString());
             }
 
-            
+
             SetState(State.Check);
         }
 
 
-        private void RunTimer()
-        {
-            while (token.IsAlive())
-            {
-                mineStats.RunTime += 1;
-                mineStats.AvgMinedPerHour = (int)((double)mineStats.VeinsMined / (double)mineStats.RunTime * 3600);
-
-                // Estimate to burn labor
-                var estimate = mineStats.GetBurnEstimate(Host.me.laborPoints);
-                var esDateTime = new DateTime(estimate.Ticks);
-
-                UI.UpdateLabel(UI.lbl_EstimatingTime, esDateTime.ToString("HH:mm:ss"));
-
-
-                Utils.Delay(1000, token);
-            }
-        }
+        
 
         private void MiningWatch()
         {
@@ -306,14 +386,14 @@ namespace AeonMiner.Modules
             {
                 try
                 {
-                    if (IsFreerunEnabled())
-                    {
-                        TryFreerun();
-                    }
-
                     if (isNavMesh && IsWarpingEnabled())
                     {
                         TryWarping(x, y, z);
+                    }
+
+                    if (IsFreerunEnabled())
+                    {
+                        TryFreerun();
                     }
 
                     if (beginDist >= 16)
@@ -397,7 +477,7 @@ namespace AeonMiner.Modules
 
             if (!result && Host.GetLastError() == LastError.MoveTooFarDistance)
             {
-                throw new StopException("Navigation issue, stopping.");
+                
             }
 
 
@@ -414,9 +494,16 @@ namespace AeonMiner.Modules
                 ? 50 : 20;
 
 
-            if (!InCombat() && !Host.me.isGlobalCooldown && mpp > minMpp && !isDashActive && !IsAnyBuffExists(Buffs.Freerunner))
+            bool isDashReady = !InCombat() && !isDashActive && !IsAnyBuffExists(Buffs.Freerunner) 
+                
+                && mpp > minMpp
+                && !Host.me.isGlobalCooldown;
+
+
+            if (isDashReady && !memory.IsLocked("Dashing"))
             {
                 Host.UseSkill(Skills.Dash);
+                memory.Lock("Dashing", Utils.RandomNum(4000, 6000), 4);
             }
 
             else if (isDashActive && mpp <= (minMpp - 10))
@@ -427,6 +514,10 @@ namespace AeonMiner.Modules
 
         private void TryWarping(double destX, double destY, double destZ)
         {
+            if (memory.IsLocked("Warping"))
+                return;
+
+
             var point = new Point3D(GetRayCast(18));
             var landingZone = new RoundZone(destX, destY, 8);
 
@@ -435,7 +526,7 @@ namespace AeonMiner.Modules
                    z = point.Z, polyZ = 0;
 
 
-            var poly = gps.GetAllGpsPolygons().Find(p => p.PointInZone(x, y));
+            var poly = gps.GetPolyByCoords(x, y);
 
             if (poly != null)
             {
@@ -443,9 +534,7 @@ namespace AeonMiner.Modules
             }
 
 
-            bool isCastReady = ((InNavMesh(x, y, z) && (Host.me.Z + 3.5) > Host.getZFromHeightMap(x, y)) 
-                            || (IsPointInMesh(x, y) 
-                            && polyZ != 0 && (Host.me.Z + 3.5) > polyZ))
+            bool isCastReady = ((InNavMesh(x, y, z) && (Host.me.Z + 2.5) > Host.getZFromHeightMap(x, y)) || (IsPointInMesh(x, y) && polyZ != 0 && (Host.me.Z + 2.5) > polyZ))
 
                             && Host.me.dist(x, y) < Host.me.dist(destX, destY)
                             && GetNavDist(x, y, z, destX, destY, destZ) < GetNavDist(destX, destY, destZ)
@@ -454,12 +543,16 @@ namespace AeonMiner.Modules
 
             if (isCastReady && Host.UseSkill(Skills.Teleportation))
             {
-                // Add to cooldown
+                memory.Lock("Warping", 1400);
             }
         }
 
         private void TryQuickstep()
         {
+            if (memory.IsLocked("Quickstep"))
+                return;
+
+
             int minMpp = (settings.FightAggroMobs) 
                 ? 20 : 10;
 
@@ -472,6 +565,7 @@ namespace AeonMiner.Modules
             if (isQuickstepReady)
             {
                 Host.UseSkill(Skills.Quickstep);
+                memory.Lock("Quickstep", 4000, 2);
             }
         }
 
@@ -577,9 +671,9 @@ namespace AeonMiner.Modules
 
         private void OnLaborAmountChanged(int count)
         {
-            mineStats.LaborBurned += Math.Abs(count);
+            stats.LaborBurned += Math.Abs(count);
 
-            Utils.InvokeOn(UI, () => UI.lbl_LaborRemaining.Text = Host.me.laborPoints.ToString());
+            Utils.InvokeOn(UI, () => UI.lbl_LaborRemaining.Text = $"{Host.me.laborPoints}/-{settings.MinLaborPoints}");
         }
 
         private void OnNewInvItem(Item item, int count)
@@ -595,7 +689,7 @@ namespace AeonMiner.Modules
         {
             if (obj.type == BotTypes.Player && obj2 == Host.me && skill.id == 20256)
             {
-                mineStats.SuspectReports += 1;
+                stats.SuspectReports += 1;
                 UI.GameLog($"You have been reported by: {obj.name}");
             }
         }
@@ -604,7 +698,7 @@ namespace AeonMiner.Modules
         {
             if (chatType == ChatType.Whisper)
             {
-                mineStats.WhispersReceived += 1;
+                stats.WhispersReceived += 1;
                 UI.GameLog($"From {sender}: {text}");
             }
         }
@@ -621,7 +715,8 @@ namespace AeonMiner.Modules
 
         #region Helpers
 
-        private void SetState(State state) => this.state = state;
+        private void SetState(State nstate) => (state) = nstate;
+        private void SetState(Services nstate) => (services) = nstate;
 
         private bool IsWarpingEnabled() => settings.UseTeleportation && Host.isSkillLearned(Skills.Teleportation);
         private bool IsQuickstepEnabled() => settings.UseQuickstep && Host.isSkillLearned(Skills.Quickstep);
@@ -630,6 +725,7 @@ namespace AeonMiner.Modules
         private bool IsQuestTakeLocked() => (!settings.BeginDailyQuest || IsQuestActive(6779) || GetProfLevel(13) < 50000);
 
         private bool IsPointInMesh(double x, double y) => gps.GetAllGpsPolygons().Any(p => p.PointInZone(x, y));
+
         private List<GpsPoint> GetPatrolPoints() => gps.GetPointsByName("patrol");
         private bool IsPatrolPointsExists() => (GetPatrolPoints().Count() > 0);
 
