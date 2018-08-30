@@ -1,1 +1,1 @@
-# ArcheBot-Miner-Plugin-Legacy-
+# ArcheBot Miner Legacy Plugin
